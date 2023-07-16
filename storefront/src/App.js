@@ -2,25 +2,18 @@ import React, { Component } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Homepage, SearchPage } from "./screens";
 import { AvtrNavbar } from "./components";
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Homepage />,
-  },
-  {
-    path: "/search",
-    element: <SearchPage />,
-  },
-]);
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 class App extends Component {
   render() {
     return (
-      <div>
+      <Router>
         <AvtrNavbar />
-        <RouterProvider router={router} />
-      </div>
+        <Routes>
+          <Route exact path="/" element={<Homepage />} />
+          <Route exact path="/search/:searchTerm" element={<SearchPage />} />
+        </Routes>
+      </Router>
     );
   }
 }

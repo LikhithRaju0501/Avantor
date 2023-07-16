@@ -5,12 +5,19 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const AvtrNavbar = () => {
+  const { register, handleSubmit } = useForm();
+
+  let navigate = useNavigate();
+  const onSubmit = (data) => navigate(`/search/${data?.search}`);
+
   return (
     <Navbar expand="lg">
       <Container fluid>
-        <Navbar.Brand>Avantor</Navbar.Brand>
+        <Navbar.Brand href="/">Avantor</Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav
@@ -31,14 +38,17 @@ const AvtrNavbar = () => {
             <Nav.Link></Nav.Link>
             <Nav.Link>Logout</Nav.Link>
           </Nav>
-          <Form className="d-flex">
+          <Form className="d-flex" onSubmit={handleSubmit(onSubmit)}>
             <Form.Control
               type="search"
               placeholder="Search"
               className="me-2"
               aria-label="Search"
+              {...register("search", { required: true })}
             />
-            <Button variant="outline-success">Search</Button>
+            <Button variant="outline-success" type="submit">
+              Search
+            </Button>
           </Form>
         </Navbar.Collapse>
       </Container>

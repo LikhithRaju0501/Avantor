@@ -1,0 +1,17 @@
+.searchItem {
+  width: 60%;
+  height: max-content;
+  margin-top: 10vh;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24),
+    0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 6px rgba(0, 0, 0, 0.12);
+  padding: 15px;
+  .search-item {
+    gap: 20px;
+    .item-details {
+      .item-description {
+        font-size: 15px;
+        margin-top: 10px;
+      }
+    }
+  }
+}
