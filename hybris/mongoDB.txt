@@ -1,0 +1,3 @@
+password: qUY0MaYYHrPk2E0n
+username: likhithgraju
+mongodb+srv://likhithgraju:<password>@cluster0.dudrojd.mongodb.net/
