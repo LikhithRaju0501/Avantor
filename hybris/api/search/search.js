@@ -23,14 +23,33 @@ router.post("/", async (req, res) => {
 
 router.get("/:searchTerm", async (req, res) => {
   const searchTerm = req?.params?.searchTerm;
+  const currentPage = parseInt(req.query.currentPage) || 0;
+  const pageSize = parseInt(req?.query?.pageSize) || 10;
 
   if (searchTerm === "") res.status(200).json([]);
   const regex = new RegExp(searchTerm, "i");
   try {
-    const data = await searchModel.find({
+    const data = await searchModel
+      .find({
+        $or: [
+          { product: { $regex: regex } },
+          { description: { $regex: regex } },
+        ],
+      })
+      .skip(currentPage * pageSize)
+      .limit(pageSize);
+
+    const totalResults = await searchModel.countDocuments({
       $or: [{ product: { $regex: regex } }, { description: { $regex: regex } }],
     });
-    res.json({ entries: [...data], searchTerm });
+
+    const totalPages = Math.ceil(totalResults / pageSize);
+
+    res.json({
+      entries: [...data],
+      pagination: { currentPage, pageSize, totalPages, totalResults },
+      searchTerm,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
