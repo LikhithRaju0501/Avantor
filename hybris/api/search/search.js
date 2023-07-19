@@ -1,12 +1,15 @@
 var express = require("express");
 const searchModel = require("./searchModel");
+const supplierModel = require("../supplier/supplierModel");
 var router = express.Router();
+
+router.get("/", async (req, res) => res.status(200).json([]));
 
 router.post("/", async (req, res) => {
   console.log(req?.body);
   const data = new searchModel({
-    product: req.body.product,
-    description: req.body.description,
+    product: req?.body?.product,
+    description: req?.body?.description,
   });
 
   try {
@@ -19,9 +22,14 @@ router.post("/", async (req, res) => {
 
 router.get("/:searchTerm", async (req, res) => {
   const searchTerm = req?.params?.searchTerm;
+
+  if (searchTerm === "") res.status(200).json([]);
+  const regex = new RegExp(searchTerm, "i");
   try {
-    const data = await searchModel.find();
-    res.json({ ...data, searchTerm });
+    const data = await searchModel.find({
+      $or: [{ product: { $regex: regex } }, { description: { $regex: regex } }],
+    });
+    res.json({ entries: [...data], searchTerm });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
