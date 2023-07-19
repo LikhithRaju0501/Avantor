@@ -6,10 +6,11 @@ var router = express.Router();
 router.get("/", async (req, res) => res.status(200).json([]));
 
 router.post("/", async (req, res) => {
-  console.log(req?.body);
+  const supplier = await supplierModel.findById(req?.body?.supplierId);
   const data = new searchModel({
     product: req?.body?.product,
     description: req?.body?.description,
+    supplier: supplier,
   });
 
   try {

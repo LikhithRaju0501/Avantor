@@ -10,8 +10,8 @@ const dataSchema = new mongoose.Schema({
     type: String,
   },
   supplier: {
-    id: mongoose.Schema.Types.ObjectId,
-    name: String,
+    _id: mongoose.Schema.Types.ObjectId,
+    supplierName: String,
   },
 });
 
