@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import SearchItem from "./SearchItem";
-import Pagination from "react-bootstrap/Pagination";
 import { useGetProducts } from "../../api/products";
 import { Spinner } from "react-bootstrap";
+import { PaginationCMS } from "../../components";
 
 const SearchPage = () => {
   const { searchTerm } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+
   const currentPage = Number(searchParams?.get("currentPage")) || 0;
   const { isLoading, data, isError, error } = useGetProducts(
     searchTerm,
@@ -23,16 +24,6 @@ const SearchPage = () => {
   if (!isLoading) {
     paginationModel = { currentPage, ...data?.data?.pagination };
   }
-
-  const getMin = (a, b) => (a < b ? a : b);
-  const getMax = (a, b) => (a < b ? b : a);
-
-  const paginatedEvent = (pageNumber) => {
-    if (pageNumber === 0) {
-      searchParams.delete("currentPage");
-      setSearchParams(searchParams);
-    } else setSearchParams({ ["currentPage"]: pageNumber });
-  };
 
   return (
     <div>
@@ -50,45 +41,10 @@ const SearchPage = () => {
               <h3>Facets</h3>
             </section>
             <div>
-              {paginationModel?.totalPages > 1 && (
-                <Pagination>
-                  <Pagination.First onClick={() => paginatedEvent(0)} />
-                  <Pagination.Prev
-                    onClick={() =>
-                      paginatedEvent(getMax(paginationModel.currentPage - 1, 0))
-                    }
-                  />
-                  {[...Array(paginationModel?.totalPages)].map((e, i) => {
-                    return (
-                      <Pagination.Item
-                        key={i}
-                        onClick={() => paginatedEvent(i)}
-                      >
-                        {i + 1}
-                      </Pagination.Item>
-                    );
-                  })}
-                  <Pagination.Next
-                    onClick={() =>
-                      paginatedEvent(
-                        getMin(
-                          paginationModel?.currentPage + 1,
-                          paginationModel?.totalPages - 1
-                        )
-                      )
-                    }
-                  />
-                  <Pagination.Last
-                    onClick={() =>
-                      paginatedEvent(
-                        paginationModel?.totalPages === 0
-                          ? 0
-                          : paginationModel?.totalPages - 1
-                      )
-                    }
-                  />
-                </Pagination>
-              )}
+              <PaginationCMS
+                paginationModel={paginationModel}
+                paginatedEvent={(event) => paginatedEvent(event)}
+              />
               {data?.data?.entries.length === 0 ? (
                 <h2>No Results for this term</h2>
               ) : (
