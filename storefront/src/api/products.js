@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useQuery, useMutation } from "react-query";
-import { constants, occEndpointService } from "./apiUrls";
+import { useQuery } from "react-query";
+import { constants } from "./apiUrls";
 
 const fetchProducts = (searchTerm, currentPage) => {
   return axios.get(
