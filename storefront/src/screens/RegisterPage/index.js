@@ -16,10 +16,7 @@ const RegisterPage = () => {
   } = useForm();
   let navigate = useNavigate();
 
-  const onSuccess = () => {
-    let path = "/login";
-    navigate(path);
-  };
+  const onSuccess = () => navigate("/login");
 
   const onError = (error) => {
     if (error?.response?.status === 403) {
