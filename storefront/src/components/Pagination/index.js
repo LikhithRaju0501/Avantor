@@ -24,7 +24,11 @@ const PaginationCMS = ({ paginationModel }) => {
         />
         {[...Array(paginationModel?.totalPages)].map((e, i) => {
           return (
-            <Pagination.Item key={i} onClick={() => paginatedEvent(i)}>
+            <Pagination.Item
+              active={i === paginationModel?.currentPage}
+              key={i}
+              onClick={() => paginatedEvent(i)}
+            >
               {i + 1}
             </Pagination.Item>
           );
