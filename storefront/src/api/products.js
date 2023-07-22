@@ -18,3 +18,18 @@ export const useGetProducts = (searchTerm, currentPage) => {
     }
   );
 };
+
+const fetchProductDetails = (productId) => {
+  return axios.get(`${constants.baseSiteId}p/${productId}`);
+};
+
+export const useGetProductDetails = (productId) => {
+  return useQuery(
+    ["productDetails", productId],
+    () => fetchProductDetails(productId),
+    {
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    }
+  );
+};
