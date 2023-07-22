@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
 const searchRoute = require("./api/search/search");
+const productRoute = require("./api/product/product");
 const supplierRoute = require("./api/supplier/supplier");
 const port = 5000;
 const mongoString =
@@ -26,6 +27,7 @@ database.once("connected", () => {
 
 app.use("/search", searchRoute);
 app.use("/supplier", supplierRoute);
+app.use("/p", productRoute);
 
 // Define a route for the home page
 

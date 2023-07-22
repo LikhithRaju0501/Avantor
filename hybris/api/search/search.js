@@ -1,7 +1,7 @@
 var express = require("express");
 const searchModel = require("./searchModel");
 const supplierModel = require("../supplier/supplierModel");
-const { getFacets } = require("./getFacets");
+const { getFacets, getPaginatedData } = require("./resuableMethods");
 var router = express.Router();
 
 let currentData, totalData;
@@ -51,21 +51,27 @@ router.get("/:searchTerm", async (req, res) => {
     currentData?.pagination?.currentPage !== currentPage &&
     currentData?.pagination?.pageSize === pageSize
   ) {
-    const entriesToSend = totalData.slice(
-      currentPage * pageSize,
-      getMin((currentPage + 1) * 10, totalResults)
+    currentData = getPaginatedData(
+      totalData,
+      currentPage,
+      pageSize,
+      totalPages,
+      totalResults,
+      searchTerm,
+      currentQuery
     );
 
-    const dataToSend = {
-      entries: [...entriesToSend],
-      pagination: { currentPage, pageSize, totalPages, totalResults },
-      searchTerm,
-      currentQuery,
-    };
-
-    currentData = dataToSend;
-
-    res.json(dataToSend);
+    res.json(
+      getPaginatedData(
+        totalData,
+        currentPage,
+        pageSize,
+        totalPages,
+        totalResults,
+        searchTerm,
+        currentQuery
+      )
+    );
   } else {
     try {
       totalData = await searchModel.find({
@@ -75,21 +81,27 @@ router.get("/:searchTerm", async (req, res) => {
         ],
       });
 
-      const entriesToSend = totalData.slice(
-        currentPage * pageSize,
-        getMin((currentPage + 1) * 10, totalResults)
+      currentData = getPaginatedData(
+        totalData,
+        currentPage,
+        pageSize,
+        totalPages,
+        totalResults,
+        searchTerm,
+        currentQuery
       );
 
-      const dataToSend = {
-        entries: [...entriesToSend],
-        pagination: { currentPage, pageSize, totalPages, totalResults },
-        searchTerm,
-        currentQuery,
-      };
-
-      currentData = dataToSend;
-
-      res.json(dataToSend);
+      res.json(
+        getPaginatedData(
+          totalData,
+          currentPage,
+          pageSize,
+          totalPages,
+          totalResults,
+          searchTerm,
+          currentQuery
+        )
+      );
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
