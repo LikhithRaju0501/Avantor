@@ -5,6 +5,7 @@ const cors = require("cors");
 const searchRoute = require("./api/search/search");
 const productRoute = require("./api/product/product");
 const supplierRoute = require("./api/supplier/supplier");
+const registerRoute = require("./api/user/user");
 const port = 5000;
 const mongoString =
   "mongodb+srv://likhithgraju:qUY0MaYYHrPk2E0n@cluster0.dudrojd.mongodb.net/avantor";
@@ -28,6 +29,7 @@ database.once("connected", () => {
 app.use("/search", searchRoute);
 app.use("/supplier", supplierRoute);
 app.use("/p", productRoute);
+app.use("/register", registerRoute);
 
 // Define a route for the home page
 
