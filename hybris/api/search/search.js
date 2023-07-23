@@ -2,6 +2,7 @@ var express = require("express");
 const searchModel = require("./searchModel");
 const supplierModel = require("../supplier/supplierModel");
 const { getFacets, getPaginatedData } = require("./resuableMethods");
+const { escapeRegExp } = require("lodash");
 var router = express.Router();
 
 let currentData, totalData;
@@ -29,7 +30,8 @@ router.get("/:searchTerm", async (req, res) => {
   const currentPage = parseInt(req?.query?.currentPage) || 0;
   const currentQuery = parseInt(req?.query?.currentQuery) || "";
   const pageSize = parseInt(req?.query?.pageSize) || 10;
-  const regex = new RegExp(searchTerm, "i");
+  const escapedUserInput = escapeRegExp(searchTerm);
+  const regex = new RegExp(escapedUserInput, "i");
 
   const totalResults = await searchModel.countDocuments({
     $or: [{ product: { $regex: regex } }, { description: { $regex: regex } }],
