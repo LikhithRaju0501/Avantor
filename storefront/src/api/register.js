@@ -12,3 +12,14 @@ export const useRegisterUser = (onSuccess, onError) => {
     onError,
   });
 };
+
+const loginUser = (data) => {
+  return axios.post(`${constants.baseSiteId}login`, data);
+};
+
+export const useLoginUser = (onSuccess, onError) => {
+  return useMutation(loginUser, {
+    onSuccess,
+    onError,
+  });
+};

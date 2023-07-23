@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { Homepage, ProductPage, RegisterPage, SearchPage } from "./screens";
+import {
+  Homepage,
+  LoginPage,
+  ProductPage,
+  RegisterPage,
+  SearchPage,
+} from "./screens";
 import { AvtrNavbar } from "./components";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { QueryClientProvider, QueryClient } from "react-query";
@@ -17,6 +23,7 @@ class App extends Component {
             <Route exact path="/search/:searchTerm" element={<SearchPage />} />
             <Route exact path="/p/:productId" element={<ProductPage />} />
             <Route exact path="/register" element={<RegisterPage />} />
+            <Route exact path="/login" element={<LoginPage />} />
           </Routes>
         </Router>
       </QueryClientProvider>
