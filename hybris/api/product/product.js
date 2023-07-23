@@ -1,9 +1,5 @@
 var express = require("express");
 const searchModel = require("../search/searchModel");
-const supplierModel = require("../supplier/supplierModel");
-const mongodb = require("mongodb");
-const ObjectId = mongodb.ObjectId;
-const mongoose = require("mongoose");
 var router = express.Router();
 
 router.get("/:productId", async (req, res) => {
