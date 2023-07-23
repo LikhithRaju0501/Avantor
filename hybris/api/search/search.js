@@ -45,7 +45,7 @@ router.get("/:searchTerm", async (req, res) => {
     currentData?.pagination?.currentPage === currentPage &&
     currentData?.pagination?.pageSize === pageSize
   ) {
-    res.json(currentData);
+    return res.status(200).json(currentData);
   } else if (
     currentData?.searchTerm === searchTerm &&
     currentData?.pagination?.currentPage !== currentPage &&
@@ -61,17 +61,19 @@ router.get("/:searchTerm", async (req, res) => {
       currentQuery
     );
 
-    res.json(
-      getPaginatedData(
-        totalData,
-        currentPage,
-        pageSize,
-        totalPages,
-        totalResults,
-        searchTerm,
-        currentQuery
-      )
-    );
+    return res
+      .status(200)
+      .json(
+        getPaginatedData(
+          totalData,
+          currentPage,
+          pageSize,
+          totalPages,
+          totalResults,
+          searchTerm,
+          currentQuery
+        )
+      );
   } else {
     try {
       totalData = await searchModel.find({
@@ -91,17 +93,19 @@ router.get("/:searchTerm", async (req, res) => {
         currentQuery
       );
 
-      res.json(
-        getPaginatedData(
-          totalData,
-          currentPage,
-          pageSize,
-          totalPages,
-          totalResults,
-          searchTerm,
-          currentQuery
-        )
-      );
+      return res
+        .status(200)
+        .json(
+          getPaginatedData(
+            totalData,
+            currentPage,
+            pageSize,
+            totalPages,
+            totalResults,
+            searchTerm,
+            currentQuery
+          )
+        );
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
