@@ -24,7 +24,6 @@ const LoginPage = () => {
   };
 
   const onError = (error) => {
-    //Show global error message
     const { data, status } = error?.response;
     if (status === 404) {
       setUserNotExistsError(data?.message);
@@ -32,6 +31,8 @@ const LoginPage = () => {
     } else if (status === 401) {
       setIncorrectCred(data?.message);
       setUserNotExistsError(false);
+    } else {
+      //Show global error message
     }
   };
 

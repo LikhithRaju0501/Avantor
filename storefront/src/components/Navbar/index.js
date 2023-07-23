@@ -7,6 +7,7 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { isLoggedIn, logout } from "../../api/register";
 
 const AvtrNavbar = () => {
   const { register, handleSubmit } = useForm();
@@ -36,9 +37,15 @@ const AvtrNavbar = () => {
             <Nav.Link>Contact Us</Nav.Link>
             <Nav.Link></Nav.Link>
             <Nav.Link></Nav.Link>
-            <Nav.Link>Logout</Nav.Link>
-            <Nav.Link href={"/register"}>Register</Nav.Link>
-            <Nav.Link href={"/login"}>Login</Nav.Link>
+
+            {isLoggedIn() ? (
+              <Nav.Link onClick={logout}>Logout</Nav.Link>
+            ) : (
+              <>
+                <Nav.Link href={"/register"}>Register</Nav.Link>
+                <Nav.Link href={"/login"}>Login</Nav.Link>
+              </>
+            )}
           </Nav>
           <Form className="d-flex" onSubmit={handleSubmit(onSubmit)}>
             <Form.Control

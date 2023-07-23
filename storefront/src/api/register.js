@@ -23,3 +23,12 @@ export const useLoginUser = (onSuccess, onError) => {
     onError,
   });
 };
+
+export const isLoggedIn = () => {
+  return Boolean(localStorage.getItem("token"));
+};
+
+export const logout = () => {
+  localStorage.removeItem("token");
+  window.location.reload();
+};
