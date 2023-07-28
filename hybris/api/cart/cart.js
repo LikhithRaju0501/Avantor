@@ -5,6 +5,22 @@ const cartModel = require("./cartModel");
 const searchModel = require("../search/searchModel");
 var router = express.Router();
 
+router.get("/", authenticateToken, async (req, res) => {
+  const user = await UserModel.findById(req?.userId);
+  try {
+    const cartDetails = await cartModel.findOne({ userId: req?.userId });
+    return res.status(200).json({
+      name: user?.username,
+      entries: cartDetails?.entries || [],
+      type: "cartWSDTO",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error,
+    });
+  }
+});
+
 router.post("/", authenticateToken, async (req, res) => {
   try {
     const { productId, quantity } = req?.body;
@@ -22,7 +38,7 @@ router.post("/", authenticateToken, async (req, res) => {
         //Entry exists updating quantity
 
         result = await cartModel.updateOne(
-          { "entries.productId": productId },
+          { _id: getCart?._id, "entries.productId": productId },
           { $set: { "entries.$.quantity": quantity } }
         );
 
