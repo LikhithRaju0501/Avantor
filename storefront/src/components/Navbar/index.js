@@ -33,7 +33,7 @@ const AvtrNavbar = () => {
               <NavDropdown.Divider />
               <NavDropdown.Item>My Details</NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link>Cart</Nav.Link>
+            <Nav.Link href={"/cart"}>Cart</Nav.Link>
             <Nav.Link>Contact Us</Nav.Link>
             <Nav.Link></Nav.Link>
             <Nav.Link></Nav.Link>

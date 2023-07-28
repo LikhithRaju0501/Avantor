@@ -11,13 +11,13 @@ const SearchItem = ({ productId, product, description, supplierName }) => {
             <Link style={{ textDecoration: "none" }} to={`/p/${productId}`}>
               {product}
             </Link>
-            <div className="item-description">
-              <p>{description}</p>
-              <div>
-                <span>Supplier</span>:{supplierName || "-"}
-              </div>
-            </div>
           </h4>
+          <div className="item-description">
+            <p>{description}</p>
+            <div>
+              <span>Supplier</span> : {supplierName || "-"}
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {
+  CartPage,
   Homepage,
   LoginPage,
   ProductPage,
@@ -24,6 +25,7 @@ class App extends Component {
             <Route exact path="/p/:productId" element={<ProductPage />} />
             <Route exact path="/register" element={<RegisterPage />} />
             <Route exact path="/login" element={<LoginPage />} />
+            <Route exact path="/cart" element={<CartPage />} />
           </Routes>
         </Router>
       </QueryClientProvider>

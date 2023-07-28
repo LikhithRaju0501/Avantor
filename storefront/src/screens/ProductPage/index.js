@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useGetProductDetails } from "../../api/products";
 import ProductImageSection from "./ProductImageSection";
 import "./index.css";
