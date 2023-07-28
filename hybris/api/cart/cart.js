@@ -1,4 +1,5 @@
 var express = require("express");
+const { ObjectId } = require("mongodb");
 const authenticateToken = require("../middleware/middleware");
 const UserModel = require("../user/UserModel");
 const cartModel = require("./cartModel");
@@ -78,6 +79,51 @@ router.post("/", authenticateToken, async (req, res) => {
       return res.status(201).json({
         message: "New Cart Created, Added item",
       });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      error,
+    });
+  }
+});
+
+router.delete("/", authenticateToken, async (req, res) => {
+  try {
+    const { productId } = req?.body;
+    const cartDetails = await cartModel.findOne({ userId: req?.userId });
+    if (!cartDetails) {
+      return res.status(404).json({
+        message: "Cart not found.",
+        type: "cartWSDTO",
+      });
+    } else {
+      let isEntryAvailable;
+      const newEntries = cartDetails?.entries?.filter((item) => {
+        isEntryAvailable = item?.productId?.equals(new ObjectId(productId));
+        return !item?.productId?.equals(new ObjectId(productId));
+      });
+
+      if (newEntries?.length === 0) {
+        const result = await cartModel.deleteOne({ _id: cartDetails?._id });
+        return res.status(201).json({
+          message: "Deleted Cart",
+          type: "cartWSDTO",
+        });
+      } else {
+        const result = await cartModel.updateOne(
+          { _id: cartDetails?._id },
+          { $set: { entries: [...newEntries] } }
+        );
+        return isEntryAvailable
+          ? res.status(201).json({
+              message: "Deleted Item",
+              type: "cartWSDTO",
+            })
+          : res.status(404).json({
+              message: "Item not found",
+              type: "cartWSDTO",
+            });
+      }
     }
   } catch (error) {
     return res.status(500).json({
