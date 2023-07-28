@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useGetProductDetails } from "../../api/products";
 import ProductImageSection from "./ProductImageSection";
 import "./index.css";
-import CxItemCounter from "../../components/CxItemCounter";
 import { useForm, FormProvider } from "react-hook-form";
+import { AddToCartModal, CxItemCounter } from "../../components";
 
 const ProductPage = () => {
   const { productId } = useParams();
@@ -13,8 +13,10 @@ const ProductPage = () => {
 
   const { isLoading, data, isError, error } = useGetProductDetails(productId);
   const addToCart = () => {
-    console.log(methods.watch("quantity"));
+    setModalShow(true);
   };
+
+  const [modalShow, setModalShow] = useState(false);
 
   return (
     <div style={{ padding: "1vh 10vw" }}>
@@ -39,6 +41,17 @@ const ProductPage = () => {
             <button className="btn btn-primary mt-3" onClick={addToCart}>
               Add To Cart
             </button>
+            <AddToCartModal
+              show={modalShow}
+              products={[
+                {
+                  product: data?.data?.product,
+                  productId,
+                  quantity: methods?.watch("quantity"),
+                },
+              ]}
+              onHide={() => setModalShow(false)}
+            />
           </div>
         </div>
       ) : (
