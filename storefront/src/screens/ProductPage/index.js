@@ -8,13 +8,10 @@ import { AddToCartModal, CxItemCounter } from "../../components";
 
 const ProductPage = () => {
   const { productId } = useParams();
-  const [searchParams] = useSearchParams();
   const methods = useForm();
 
   const { isLoading, data, isError, error } = useGetProductDetails(productId);
-  const addToCart = () => {
-    setModalShow(true);
-  };
+  const addToCartModal = () => setModalShow(true);
 
   const [modalShow, setModalShow] = useState(false);
 
@@ -38,7 +35,7 @@ const ProductPage = () => {
             <FormProvider {...methods}>
               <CxItemCounter />
             </FormProvider>
-            <button className="btn btn-primary mt-3" onClick={addToCart}>
+            <button className="btn btn-primary mt-3" onClick={addToCartModal}>
               Add To Cart
             </button>
             <AddToCartModal
