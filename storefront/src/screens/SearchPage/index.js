@@ -2,7 +2,7 @@ import React from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import SearchItem from "./SearchItem";
 import { useGetProducts } from "../../api/products";
-import { CxSpinner, PaginationCMS } from "../../components";
+import { CxSpinner, CxPagination } from "../../components";
 
 const SearchPage = () => {
   const { searchTerm } = useParams();
@@ -38,7 +38,7 @@ const SearchPage = () => {
               <h3>Facets</h3>
             </section>
             <div>
-              <PaginationCMS
+              <CxPagination
                 paginationModel={paginationModel}
                 paginatedEvent={(event) => paginatedEvent(event)}
               />
