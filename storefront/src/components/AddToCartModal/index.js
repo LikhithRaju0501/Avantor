@@ -1,7 +1,24 @@
 import React from "react";
 import { Button, Modal, Table } from "react-bootstrap";
+import { useAddToCart } from "../../api/cart";
+import { useNavigate } from "react-router-dom";
 
 const AddToCartModal = ({ products, ...rest }) => {
+  const addToCartSuccess = () => navigate(`/cart`);
+  const {
+    isLoading: isAddToCartLoading,
+    mutate,
+    error: addToCartError,
+  } = useAddToCart(addToCartSuccess);
+  let navigate = useNavigate();
+
+  const addToCart = () => {
+    mutate({
+      productId: products?.[0]?.productId,
+      quantity: products?.[0]?.quantity,
+    });
+  };
+
   return (
     <Modal
       {...rest}
@@ -39,11 +56,15 @@ const AddToCartModal = ({ products, ...rest }) => {
         </Table>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="light" onClick={rest.onHide}>
+        <Button variant="light" onClick={rest?.onHide}>
           Close
         </Button>
-        <Button variant="success" onClick={rest.onHide}>
-          Add To Cart
+        <Button
+          variant="success"
+          onClick={addToCart}
+          disabled={isAddToCartLoading}
+        >
+          {isAddToCartLoading ? "Loading..." : "Add To Cart"}
         </Button>
       </Modal.Footer>
     </Modal>

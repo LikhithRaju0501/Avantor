@@ -5,9 +5,10 @@ import { Button } from "react-bootstrap";
 import { CxItemCounter } from "../../components";
 import { useForm, FormProvider } from "react-hook-form";
 
-const CartItem = ({ item }) => {
+const CartItem = ({ item, deleteCartEntry }) => {
   const { product, productId, supplier, description, quantity } = item;
   const methods = useForm();
+
   return (
     <div className="cartItem">
       <h4>
@@ -33,7 +34,9 @@ const CartItem = ({ item }) => {
             Update Quantity
           </Button>
         </div>
-        <Button variant="danger">Remove Item</Button>
+        <Button variant="danger" onClick={() => deleteCartEntry(productId)}>
+          Remove Item
+        </Button>
       </div>
     </div>
   );

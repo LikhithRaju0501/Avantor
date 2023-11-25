@@ -3,3 +3,4 @@ export { default as HeaderCarousel } from "./HeaderCarousel";
 export { default as PaginationCMS } from "./Pagination";
 export { default as CxItemCounter } from "./CxItemCounter";
 export { default as AddToCartModal } from "./AddToCartModal";
+export { default as CxSpinner } from "./CxSpinner";
