@@ -37,10 +37,16 @@ router.post("/", authenticateToken, async (req, res) => {
       });
       if (getEntry) {
         //Entry exists updating quantity
-
+        const { quantity: quantityToUpdate } = getEntry?.entries?.find(
+          (entry) => String(entry?.productId) === productId
+        );
         result = await cartModel.updateOne(
           { _id: getCart?._id, "entries.productId": productId },
-          { $set: { "entries.$.quantity": quantity } }
+          {
+            $set: {
+              "entries.$.quantity": Number(quantity) + Number(quantityToUpdate),
+            },
+          }
         );
 
         return res.status(201).json({

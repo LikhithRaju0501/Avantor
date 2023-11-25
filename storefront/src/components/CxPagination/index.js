@@ -2,7 +2,7 @@ import React from "react";
 import Pagination from "react-bootstrap/Pagination";
 import { useSearchParams } from "react-router-dom";
 
-const PaginationCMS = ({ paginationModel }) => {
+const CxPagination = ({ paginationModel }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const getMin = (a, b) => (a < b ? a : b);
@@ -57,4 +57,4 @@ const PaginationCMS = ({ paginationModel }) => {
   );
 };
 
-export default PaginationCMS;
+export default CxPagination;

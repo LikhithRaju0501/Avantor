@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import "./index.css";
 
-const CxItemCounter = ({ quantity }) => {
+const CxItemCounter = ({ quantity = 1 }) => {
   const methods = useFormContext();
-  const [count, setCount] = useState(quantity || 1);
+  const [count, setCount] = useState(quantity);
+  useEffect(() => {
+    setCount(quantity);
+  }, [quantity]);
 
   const changeValue = (value) => {
     if (count === 1 && value < 1) return;

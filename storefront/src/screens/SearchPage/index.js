@@ -2,8 +2,7 @@ import React from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import SearchItem from "./SearchItem";
 import { useGetProducts } from "../../api/products";
-import { Spinner } from "react-bootstrap";
-import { PaginationCMS } from "../../components";
+import { CxSpinner, CxPagination } from "../../components";
 
 const SearchPage = () => {
   const { searchTerm } = useParams();
@@ -28,9 +27,7 @@ const SearchPage = () => {
   return (
     <div>
       {isLoading ? (
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
+        <CxSpinner />
       ) : (
         <>
           <h2 style={{ textAlign: "center" }}>
@@ -41,7 +38,7 @@ const SearchPage = () => {
               <h3>Facets</h3>
             </section>
             <div>
-              <PaginationCMS
+              <CxPagination
                 paginationModel={paginationModel}
                 paginatedEvent={(event) => paginatedEvent(event)}
               />
