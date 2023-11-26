@@ -13,6 +13,11 @@ router.get("/", authenticateToken, async (req, res) => {
     return res.status(200).json({
       name: user?.username,
       entries: cartDetails?.entries || [],
+      totalPrice: cartDetails?.totalPrice || {
+        currency: "Rs",
+        value: 0,
+        formattedValue: "0Rs",
+      },
       type: "cartWSDTO",
     });
   } catch (error) {
@@ -27,24 +32,30 @@ router.post("/", authenticateToken, async (req, res) => {
     const { productId, quantity } = req?.body;
     const user = await UserModel.findById(req?.userId);
     const productData = await searchModel.findById(productId);
-    const { product, description, supplier, _id } = productData;
+    const { product, description, supplier, _id, price } = productData;
     const getCart = await cartModel.findOne({ userId: req?.userId });
     let result;
     if (getCart) {
+      const { totalPrice: totalPriceToUpdate } = getCart;
       //Cart Already exists
-      const getEntry = await cartModel.findOne({
-        entries: { $elemMatch: { productId } },
-      });
+      const getEntry = getCart?.entries?.find(
+        (entry) => String(entry?.productId) === productId
+      );
       if (getEntry) {
         //Entry exists updating quantity
-        const { quantity: quantityToUpdate } = getEntry?.entries?.find(
-          (entry) => String(entry?.productId) === productId
-        );
+        const { quantity: quantityToUpdate } = getEntry;
         result = await cartModel.updateOne(
           { _id: getCart?._id, "entries.productId": productId },
           {
             $set: {
               "entries.$.quantity": Number(quantity) + Number(quantityToUpdate),
+              totalPrice: {
+                currency: totalPriceToUpdate?.currency,
+                value: totalPriceToUpdate?.value + price?.value * quantity,
+                formattedValue: `${
+                  totalPriceToUpdate?.value + price?.value * quantity
+                }${totalPriceToUpdate?.currency}`,
+              },
             },
           }
         );
@@ -64,6 +75,16 @@ router.post("/", authenticateToken, async (req, res) => {
                 supplier,
                 productId: _id,
                 quantity,
+                price,
+              },
+            },
+            $set: {
+              totalPrice: {
+                currency: totalPriceToUpdate?.currency,
+                value: totalPriceToUpdate?.value + price?.value * quantity,
+                formattedValue: `${
+                  totalPriceToUpdate?.value + price?.value * quantity
+                }${totalPriceToUpdate?.currency}`,
               },
             },
           },
@@ -78,7 +99,14 @@ router.post("/", authenticateToken, async (req, res) => {
       const cart = new cartModel({
         userId: user?._id,
         userName: user?.username,
-        entries: [{ product, description, supplier, productId: _id, quantity }],
+        entries: [
+          { product, description, supplier, productId: _id, quantity, price },
+        ],
+        totalPrice: {
+          ...price,
+          value: price?.value * quantity,
+          formattedValue: `${price?.value * quantity}${price?.currency}`,
+        },
       });
 
       result = await cart.save();
@@ -103,12 +131,12 @@ router.delete("/", authenticateToken, async (req, res) => {
         type: "cartWSDTO",
       });
     } else {
-      let isEntryAvailable;
-      const newEntries = cartDetails?.entries?.filter((item) => {
-        isEntryAvailable = item?.productId?.equals(new ObjectId(productId));
-        return !item?.productId?.equals(new ObjectId(productId));
-      });
-
+      const newEntries = cartDetails?.entries?.filter(
+        (item) => String(item?.productId) !== productId
+      );
+      const isEntryAvailable = cartDetails?.entries?.find(
+        (item) => String(item?.productId) === productId
+      );
       if (newEntries?.length === 0) {
         const result = await cartModel.deleteOne({ _id: cartDetails?._id });
         return res.status(201).json({
@@ -118,7 +146,25 @@ router.delete("/", authenticateToken, async (req, res) => {
       } else {
         const result = await cartModel.updateOne(
           { _id: cartDetails?._id },
-          { $set: { entries: [...newEntries] } }
+          {
+            $set: {
+              entries: [...newEntries],
+              totalPrice: {
+                ...cartDetails?.totalPrice,
+                value: isEntryAvailable
+                  ? cartDetails?.totalPrice?.value -
+                    isEntryAvailable?.price?.value * isEntryAvailable?.quantity
+                  : cartDetails?.totalPrice?.value,
+                formattedValue: isEntryAvailable
+                  ? `${
+                      cartDetails?.totalPrice?.value -
+                      isEntryAvailable?.price?.value *
+                        isEntryAvailable?.quantity
+                    }${cartDetails?.totalPrice?.currency}`
+                  : cartDetails?.totalPrice?.formattedValue,
+              },
+            },
+          }
         );
         return isEntryAvailable
           ? res.status(201).json({

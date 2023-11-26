@@ -6,7 +6,7 @@ import { CxItemCounter } from "../../components";
 import { useForm, FormProvider } from "react-hook-form";
 
 const CartItem = ({ item, deleteCartEntry }) => {
-  const { product, productId, supplier, description, quantity } = item;
+  const { product, productId, supplier, description, quantity, price } = item;
   const methods = useForm();
 
   return (
@@ -18,6 +18,9 @@ const CartItem = ({ item, deleteCartEntry }) => {
       </h4>
       <div className="item-description">
         <p>{description}</p>
+        <span>
+          Price: <span className="fw-bold">{price?.formattedValue}</span>
+        </span>
         <div>
           <span>Supplier</span> : {supplier?.supplierName || "-"}
         </div>

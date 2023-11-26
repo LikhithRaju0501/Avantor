@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useMutation, useQuery } from "react-query";
 import { constants } from "./apiUrls";
+import { axiosInstance } from "./interceptor";
 
 const fetchCartDetails = () => {
-  return axios.get(`${constants.baseSiteId}cart`, {
+  return axiosInstance.get(`${constants.baseSiteId}cart`, {
     headers: {
       Authorization: localStorage.getItem("token"),
     },
@@ -18,7 +19,7 @@ export const useGetCartDetails = () => {
 };
 
 const fetchAddToCart = (params) => {
-  return axios.post(
+  return axiosInstance.post(
     `${constants.baseSiteId}cart`,
     { ...params },
     {
@@ -38,7 +39,7 @@ export const useAddToCart = (onAddToCartSuccess) => {
 };
 
 const deleteCartDetail = (productId) => {
-  return axios.delete(`${constants.baseSiteId}cart`, {
+  return axiosInstance.delete(`${constants.baseSiteId}cart`, {
     headers: {
       Authorization: localStorage.getItem("token"),
     },
