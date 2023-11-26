@@ -2,7 +2,7 @@ import React from "react";
 import "./index.css";
 import { Link } from "react-router-dom";
 
-const SearchItem = ({ productId, product, description, supplierName }) => {
+const SearchItem = ({ productId, product, description, supplier, price }) => {
   return (
     <div className="searchItem">
       <div className="d-flex search-item">
@@ -15,7 +15,10 @@ const SearchItem = ({ productId, product, description, supplierName }) => {
           <div className="item-description">
             <p>{description}</p>
             <div>
-              <span>Supplier</span> : {supplierName || "-"}
+              <h5>Price : {price?.formattedValue || "-"}</h5>
+            </div>
+            <div>
+              <span>Supplier</span> : {supplier?.supplierName || "-"}
             </div>
           </div>
         </div>

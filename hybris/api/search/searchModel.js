@@ -13,6 +13,20 @@ const dataSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     supplierName: String,
   },
+  price: {
+    currency: {
+      type: String,
+      required: true,
+    },
+    value: {
+      type: Number,
+      required: true,
+    },
+    formattedValue: {
+      type: String,
+      required: true,
+    },
+  },
 });
 
 module.exports = mongoose.model("products", dataSchema);

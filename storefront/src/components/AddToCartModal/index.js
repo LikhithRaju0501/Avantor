@@ -39,16 +39,18 @@ const AddToCartModal = ({ products, ...rest }) => {
               <th>#</th>
               <th>Product</th>
               <th>Quantity</th>
+              <th>Price</th>
             </tr>
           </thead>
           <tbody>
             {products &&
-              products.map(({ product, quantity, productId }, index) => {
+              products.map(({ product, quantity, productId, price }, index) => {
                 return (
                   <tr key={productId}>
                     <td>{index + 1}</td>
                     <td>{product}</td>
                     <td>{quantity}</td>
+                    <td>{price?.formattedValue}</td>
                   </tr>
                 );
               })}
