@@ -28,7 +28,9 @@ const AvtrNavbar = () => {
           >
             <NavDropdown title="My Account" id="navbarScrollingDropdown">
               <NavDropdown.Item>My Orders</NavDropdown.Item>
-              <NavDropdown.Item>Shopping List</NavDropdown.Item>
+              <NavDropdown.Item href={"/shipping-options"}>
+                Shipping Options
+              </NavDropdown.Item>
               <NavDropdown.Item>Invoice Search</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item>My Details</NavDropdown.Item>

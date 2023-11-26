@@ -3,6 +3,7 @@ import {
   CartPage,
   Homepage,
   LoginPage,
+  PageNotFound,
   ProductPage,
   RegisterPage,
   SearchPage,
@@ -32,6 +33,7 @@ class App extends Component {
               <Route exact path="/register" element={<RegisterPage />} />
               <Route exact path="/login" element={<LoginPage />} />
               <Route exact path="/cart" element={<CartPage />} />
+              <Route path="*" element={<PageNotFound />} />
             </Routes>
           </GlobalMessageProvider>
         </Router>
