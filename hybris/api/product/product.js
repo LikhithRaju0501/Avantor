@@ -11,4 +11,30 @@ router.get("/:productId", async (req, res) => {
   }
 });
 
+router.put("/updatePrice", async (req, res) => {
+  try {
+    const { productId, currency, value } = req?.body;
+    result = await searchModel.updateOne(
+      { _id: productId },
+      {
+        $set: {
+          "price.currency": currency,
+          "price.value": value,
+          "price.formattedValue": `${String(value)}${currency}`,
+        },
+      }
+    );
+    const product = await searchModel.findById(productId);
+    return res.status(201).json({
+      message: "Updated Price",
+      result,
+      product,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error,
+    });
+  }
+});
+
 module.exports = router;

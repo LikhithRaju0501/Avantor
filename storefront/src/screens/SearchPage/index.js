@@ -50,9 +50,7 @@ const SearchPage = () => {
                     <SearchItem
                       key={entry._id}
                       productId={entry._id}
-                      product={entry.product}
-                      description={entry.description}
-                      supplierName={entry.supplier.supplierName}
+                      {...entry}
                     />
                   );
                 })

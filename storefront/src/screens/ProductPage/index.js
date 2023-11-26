@@ -23,6 +23,13 @@ const ProductPage = () => {
           <div className="product-product-details">
             <h2>{data?.data?.product}</h2>
             <hr />
+            <span>
+              Price:{" "}
+              <span className="fw-bold">
+                {data?.data?.price?.formattedValue}
+              </span>
+            </span>
+            <hr />
             <h5>About this item</h5>
             <p>{data?.data?.description}</p>
             <hr />
@@ -45,6 +52,7 @@ const ProductPage = () => {
                   product: data?.data?.product,
                   productId,
                   quantity: methods?.watch("quantity"),
+                  price: data?.data?.price,
                 },
               ]}
               onHide={() => setModalShow(false)}

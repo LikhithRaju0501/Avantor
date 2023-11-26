@@ -15,6 +15,13 @@ router.post("/", async (req, res) => {
     product: req?.body?.product,
     description: req?.body?.description,
     supplier: supplier,
+    price: {
+      currency: req?.body?.price?.currency,
+      value: req?.body?.price?.value,
+      formattedValue: `${String(req?.body?.price?.value)}${
+        req?.body?.price?.currency
+      }`,
+    },
   });
 
   try {
@@ -34,7 +41,10 @@ router.get("/:searchTerm", async (req, res) => {
   const regex = new RegExp(escapedUserInput, "i");
 
   const totalResults = await searchModel.countDocuments({
-    $or: [{ product: { $regex: regex } }, { description: { $regex: regex } }],
+    $or: [
+      { product: { $regex: regex } },
+      { "supplier.supplierName": { $regex: regex } },
+    ],
   });
 
   const totalPages = Math.ceil(totalResults / pageSize);
@@ -81,7 +91,7 @@ router.get("/:searchTerm", async (req, res) => {
       totalData = await searchModel.find({
         $or: [
           { product: { $regex: regex } },
-          { description: { $regex: regex } },
+          { "supplier.supplierName": { $regex: regex } },
         ],
       });
 
