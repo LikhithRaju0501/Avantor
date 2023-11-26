@@ -2,14 +2,25 @@ import React from "react";
 import { Button, Modal, Table } from "react-bootstrap";
 import { useAddToCart } from "../../api/cart";
 import { useNavigate } from "react-router-dom";
+import { useGlobalMessage } from "../GlobalMessageService/GlobalMessageService";
 
 const AddToCartModal = ({ products, ...rest }) => {
-  const addToCartSuccess = () => navigate(`/cart`);
+  const { addMessage } = useGlobalMessage();
+
+  const addToCartSuccess = () => {
+    addMessage("Added To Cart", "success");
+    rest?.onHide();
+  };
+
+  const addToCartFailure = () => {
+    addMessage("Something went wrong, please try again later", "error");
+    rest?.onHide();
+  };
   const {
     isLoading: isAddToCartLoading,
     mutate,
     error: addToCartError,
-  } = useAddToCart(addToCartSuccess);
+  } = useAddToCart(addToCartSuccess, addToCartFailure);
   let navigate = useNavigate();
 
   const addToCart = () => {

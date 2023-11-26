@@ -2,18 +2,33 @@ import React from "react";
 import { useDeleteCartDetail, useGetCartDetails } from "../../api/cart";
 import CartItem from "./CartItem";
 import { CartSummary, CxSpinner } from "../../components";
+import { useGlobalMessage } from "../../components/GlobalMessageService/GlobalMessageService";
 
 const CartPage = () => {
+  const { addMessage } = useGlobalMessage();
   const onDeleteSuccess = () => {
+    addMessage("Deleted Successfully", "success");
     refetch();
   };
-  const { isLoading, data, isError, error, refetch } = useGetCartDetails();
+  const onDeleteError = () => {
+    addMessage("Something went wrong, Please try again later", "error");
+  };
+  const onGetCartError = () => {
+    addMessage("Failed to Fetch Cart", "error");
+  };
+  const {
+    isLoading,
+    data,
+    isError,
+    error: getCartError,
+    refetch,
+  } = useGetCartDetails(onGetCartError);
 
   const {
     isLoading: isDeleteLoading,
     mutate,
     error: deleteEntryError,
-  } = useDeleteCartDetail(onDeleteSuccess);
+  } = useDeleteCartDetail(onDeleteSuccess, onDeleteError);
 
   const deleteCartEntry = (productId) => {
     mutate(productId);

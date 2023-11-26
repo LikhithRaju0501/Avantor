@@ -11,10 +11,11 @@ const fetchCartDetails = () => {
   });
 };
 
-export const useGetCartDetails = () => {
+export const useGetCartDetails = (onGetCartError) => {
   return useQuery(["cart"], () => fetchCartDetails(), {
     refetchOnMount: true,
     refetchOnWindowFocus: false,
+    onError: onGetCartError,
   });
 };
 
@@ -30,11 +31,12 @@ const fetchAddToCart = (params) => {
   );
 };
 
-export const useAddToCart = (onAddToCartSuccess) => {
+export const useAddToCart = (onAddToCartSuccess, addToCartFailure) => {
   return useMutation(["cart"], fetchAddToCart, {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     onSuccess: onAddToCartSuccess,
+    onError: addToCartFailure,
   });
 };
 
@@ -47,10 +49,11 @@ const deleteCartDetail = (productId) => {
   });
 };
 
-export const useDeleteCartDetail = (onDeleteSuccess) => {
+export const useDeleteCartDetail = (onDeleteSuccess, onDeleteError) => {
   return useMutation(["cart"], deleteCartDetail, {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     onSuccess: onDeleteSuccess,
+    onError: onDeleteError,
   });
 };
