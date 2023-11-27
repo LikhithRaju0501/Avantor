@@ -7,6 +7,7 @@ import {
   ProductPage,
   RegisterPage,
   SearchPage,
+  ShippingOptions,
 } from "./screens";
 import { AvtrNavbar } from "./components";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -33,6 +34,11 @@ class App extends Component {
               <Route exact path="/register" element={<RegisterPage />} />
               <Route exact path="/login" element={<LoginPage />} />
               <Route exact path="/cart" element={<CartPage />} />
+              <Route
+                exact
+                path="/shipping-options"
+                element={<ShippingOptions />}
+              />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           </GlobalMessageProvider>
