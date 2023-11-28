@@ -1,0 +1,25 @@
+.default-shipping-option {
+  width: 30vw;
+  height: max-content;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24),
+    0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 6px rgba(0, 0, 0, 0.12);
+  padding: 15px;
+}
+
+.alternate-shipping-option {
+  width: 90%;
+  height: max-content;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24),
+    0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 6px rgba(0, 0, 0, 0.12);
+  padding: 15px;
+}
+
+.cx-class {
+  text-decoration: underline !important;
+  color: blue !important;
+  cursor: pointer;
+}
+
+.error-message {
+  color: red;
+}

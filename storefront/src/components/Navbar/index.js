@@ -11,6 +11,7 @@ import { isLoggedIn, logout } from "../../api/register";
 
 const AvtrNavbar = () => {
   const { register, handleSubmit } = useForm();
+  const loggedIn = isLoggedIn();
 
   let navigate = useNavigate();
   const onSubmit = (data) => navigate(`/search/${data?.search}`);
@@ -26,21 +27,23 @@ const AvtrNavbar = () => {
             style={{ maxHeight: "100px" }}
             navbarScroll
           >
-            <NavDropdown title="My Account" id="navbarScrollingDropdown">
-              <NavDropdown.Item>My Orders</NavDropdown.Item>
-              <NavDropdown.Item href={"/shipping-options"}>
-                Shipping Options
-              </NavDropdown.Item>
-              <NavDropdown.Item>Invoice Search</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item>My Details</NavDropdown.Item>
-            </NavDropdown>
-            <Nav.Link href={"/cart"}>Cart</Nav.Link>
+            {loggedIn && (
+              <>
+                <NavDropdown title="My Account" id="navbarScrollingDropdown">
+                  <NavDropdown.Item>My Orders</NavDropdown.Item>
+                  <NavDropdown.Item href={"/shipping-options"}>
+                    Shipping Options
+                  </NavDropdown.Item>
+                  <NavDropdown.Item>Invoice Search</NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item>My Details</NavDropdown.Item>
+                </NavDropdown>
+                <Nav.Link href={"/cart"}>Cart</Nav.Link>
+              </>
+            )}
             <Nav.Link>Contact Us</Nav.Link>
-            <Nav.Link></Nav.Link>
-            <Nav.Link></Nav.Link>
 
-            {isLoggedIn() ? (
+            {loggedIn ? (
               <Nav.Link onClick={logout}>Logout</Nav.Link>
             ) : (
               <>

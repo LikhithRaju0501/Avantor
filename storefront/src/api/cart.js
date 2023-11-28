@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useMutation, useQuery } from "react-query";
 import { constants } from "./apiUrls";
 import { axiosInstance } from "./interceptor";
