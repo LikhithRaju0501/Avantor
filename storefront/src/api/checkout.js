@@ -12,7 +12,7 @@ const navigateToCheckoutStep = (stepIndex) => {
 
 export const useGetNavigateToCheckoutStep = (
   stepIndex,
-  navigateToCheckout,
+  navigateToCheckoutSuccess,
   navigateToCheckoutError
 ) => {
   return useQuery(
@@ -22,7 +22,7 @@ export const useGetNavigateToCheckoutStep = (
       enabled: false,
       refetchOnMount: true,
       refetchOnWindowFocus: false,
-      onSuccess: navigateToCheckout,
+      onSuccess: navigateToCheckoutSuccess,
       onError: navigateToCheckoutError,
     }
   );
