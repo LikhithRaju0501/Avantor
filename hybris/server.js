@@ -9,6 +9,7 @@ const registerRoute = require("./api/user/register");
 const loginRoute = require("./api/user/login");
 const cartRoute = require("./api/cart/cart");
 const shippingOptionsRoute = require("./api/shippingOptions/shippingOptions");
+const checkoutRoute = require("./api/checkout/checkout");
 const port = 5000;
 const mongoString =
   "mongodb+srv://likhithgraju:qUY0MaYYHrPk2E0n@cluster0.dudrojd.mongodb.net/avantor";
@@ -36,6 +37,7 @@ app.use("/register", registerRoute);
 app.use("/login", loginRoute);
 app.use("/cart", cartRoute);
 app.use("/shipping-options", shippingOptionsRoute);
+app.use("/checkout", checkoutRoute);
 
 // Define a route for the home page
 

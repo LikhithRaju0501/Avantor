@@ -1,9 +1,9 @@
 var express = require("express");
-const { ObjectId } = require("mongodb");
 const authenticateToken = require("../middleware/middleware");
 const UserModel = require("../user/UserModel");
 const cartModel = require("./cartModel");
 const searchModel = require("../search/searchModel");
+const shippingOptionsModel = require("../shippingOptions/shippingOptionsModel");
 var router = express.Router();
 
 router.get("/", authenticateToken, async (req, res) => {
@@ -18,6 +18,9 @@ router.get("/", authenticateToken, async (req, res) => {
         value: 0,
         formattedValue: "0Rs",
       },
+      addresses: cartDetails?.address || {},
+      primaryEmailAddress: cartDetails?.primaryEmailAddress || "",
+      secondaryEmailAddress: cartDetails?.secondaryEmailAddress || [],
       type: "cartWSDTO",
     });
   } catch (error) {
@@ -96,17 +99,24 @@ router.post("/", authenticateToken, async (req, res) => {
       }
     } else {
       //New Cart Created, Added item
+      const { addresses } = await shippingOptionsModel?.findOne({
+        userId: req?.userId,
+      });
+      const defaultAddress = addresses?.find((address) => address?.isDefault);
       const cart = new cartModel({
         userId: user?._id,
         userName: user?.username,
         entries: [
           { product, description, supplier, productId: _id, quantity, price },
         ],
+        address: { ...defaultAddress },
         totalPrice: {
           ...price,
           value: price?.value * quantity,
           formattedValue: `${price?.value * quantity}${price?.currency}`,
         },
+        primaryEmailAddress: user?.email,
+        secondaryEmailAddress: [],
       });
 
       result = await cart.save();
