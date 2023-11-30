@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {
   CartPage,
+  CheckoutPage,
   Homepage,
   LoginPage,
   PageNotFound,
@@ -38,6 +39,11 @@ class App extends Component {
                 exact
                 path="/shipping-options"
                 element={<ShippingOptions />}
+              />
+              <Route
+                exact
+                path="/checkout/:checkoutStep"
+                element={<CheckoutPage />}
               />
               <Route path="*" element={<PageNotFound />} />
             </Routes>

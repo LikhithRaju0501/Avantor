@@ -1,7 +1,6 @@
 import React from "react";
 import { Button, Modal, Table } from "react-bootstrap";
 import { useAddToCart } from "../../api/cart";
-import { useNavigate } from "react-router-dom";
 import { useGlobalMessage } from "../GlobalMessageService/GlobalMessageService";
 
 const AddToCartModal = ({ products, ...rest }) => {
@@ -21,7 +20,6 @@ const AddToCartModal = ({ products, ...rest }) => {
     mutate,
     error: addToCartError,
   } = useAddToCart(addToCartSuccess, addToCartFailure);
-  let navigate = useNavigate();
 
   const addToCart = () => {
     mutate({

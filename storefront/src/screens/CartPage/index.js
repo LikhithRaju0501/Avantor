@@ -1,11 +1,15 @@
 import React from "react";
 import { useDeleteCartDetail, useGetCartDetails } from "../../api/cart";
+import { useGetNavigateToCheckoutStep } from "../../api/checkout";
 import CartItem from "./CartItem";
 import { CartSummary, CxSpinner } from "../../components";
 import { useGlobalMessage } from "../../components/GlobalMessageService/GlobalMessageService";
+import { useNavigate } from "react-router-dom";
 
 const CartPage = () => {
   const { addMessage } = useGlobalMessage();
+  let navigate = useNavigate();
+
   const onDeleteSuccess = () => {
     addMessage("Deleted Successfully", "success");
     refetch();
@@ -16,6 +20,14 @@ const CartPage = () => {
   const onGetCartError = () => {
     addMessage("Failed to Fetch Cart", "error");
   };
+  const navigateToCheckout = () => {
+    fetchValidateCheckout(1);
+  };
+  const navigateToCheckoutSuccess = () => navigate(`/checkout/1`);
+  const navigateToCheckoutError = (error) => {
+    addMessage(error?.response?.data?.message, "error");
+  };
+
   const {
     isLoading,
     data,
@@ -30,13 +42,22 @@ const CartPage = () => {
     error: deleteEntryError,
   } = useDeleteCartDetail(onDeleteSuccess, onDeleteError);
 
+  const {
+    isLoading: isValidateCheckoutLoading,
+    refetch: fetchValidateCheckout,
+  } = useGetNavigateToCheckoutStep(
+    1,
+    navigateToCheckoutSuccess,
+    navigateToCheckoutError
+  );
+
   const deleteCartEntry = (productId) => {
     mutate(productId);
   };
 
   return (
     <div style={{ padding: "1vh 10vw" }}>
-      {isLoading ? (
+      {isLoading || isValidateCheckoutLoading || isDeleteLoading ? (
         <CxSpinner />
       ) : (
         <>
@@ -56,6 +77,7 @@ const CartPage = () => {
                 cart={data?.data}
                 isNextButton={true}
                 nextButtonHeader="Proceed to Checkout"
+                nextButtonClick={navigateToCheckout}
               />
             </div>
           ) : (

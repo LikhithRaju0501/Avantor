@@ -44,7 +44,6 @@ const dataSchema = new mongoose.Schema({
       },
     },
   ],
-
   totalPrice: {
     currency: {
       type: String,
@@ -58,6 +57,43 @@ const dataSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
+  },
+  address: {
+    line1: {
+      type: String,
+      required: true,
+    },
+    line2: {
+      type: String,
+      required: true,
+    },
+    cityProvince: {
+      type: String,
+      required: true,
+    },
+    pinCode: {
+      type: Number,
+      required: true,
+    },
+    state: {
+      type: String,
+      required: true,
+    },
+    country: {
+      type: String,
+      required: true,
+    },
+    isDefault: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  primaryEmailAddress: {
+    required: true,
+    type: String,
+  },
+  secondaryEmailAddress: {
+    type: [String],
   },
 });
 

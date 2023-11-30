@@ -5,4 +5,5 @@ export { default as RegisterPage } from "./RegisterPage";
 export { default as LoginPage } from "./LoginPage";
 export { default as CartPage } from "./CartPage";
 export { default as ShippingOptions } from "./ShippingOptions";
+export { default as CheckoutPage } from "./CheckoutPage";
 export { default as PageNotFound } from "./PageNotFound";
