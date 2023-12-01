@@ -12,6 +12,7 @@ const navigateToCheckoutStep = (stepIndex) => {
 
 export const useGetNavigateToCheckoutStep = (
   stepIndex,
+  isFetchByDefault,
   navigateToCheckoutSuccess,
   navigateToCheckoutError
 ) => {
@@ -19,11 +20,31 @@ export const useGetNavigateToCheckoutStep = (
     ["checkout", stepIndex],
     () => navigateToCheckoutStep(stepIndex),
     {
-      enabled: false,
+      enabled: isFetchByDefault,
       refetchOnMount: true,
       refetchOnWindowFocus: false,
       onSuccess: navigateToCheckoutSuccess,
       onError: navigateToCheckoutError,
     }
   );
+};
+
+const updateDeliveryAddress = (addressId) => {
+  return axiosInstance.put(
+    `${constants.baseSiteId}checkout/updateCartAddress`,
+    { addressId },
+    {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    }
+  );
+};
+
+export const useUpdateDeliveryAddress = (onUpdateDeliveryAddressSuccess) => {
+  return useMutation(["checkout"], updateDeliveryAddress, {
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    onSuccess: onUpdateDeliveryAddressSuccess,
+  });
 };

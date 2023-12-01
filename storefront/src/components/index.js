@@ -6,3 +6,4 @@ export { default as AddToCartModal } from "./AddToCartModal";
 export { default as CxSpinner } from "./CxSpinner";
 export { default as CartSummary } from "./CartSummary";
 export { default as CxStepper } from "./CxStepper";
+export { default as ChangeDeliveryAddress } from "./ChangeDeliveryAddress";

@@ -2,12 +2,7 @@ import React from "react";
 import "./index.css";
 import { Button } from "react-bootstrap";
 
-const CartSummary = ({
-  cart,
-  isNextButton,
-  nextButtonHeader,
-  nextButtonClick,
-}) => {
+const CartSummary = ({ cart, children }) => {
   const { totalPrice } = cart;
   return (
     <div className="cart-summary">
@@ -18,11 +13,7 @@ const CartSummary = ({
           <span className="fw-bold">{totalPrice?.formattedValue}</span>
         </span>
       </div>
-      {isNextButton && (
-        <Button className="w-100 mt-2" onClick={nextButtonClick}>
-          {nextButtonHeader}
-        </Button>
-      )}
+      {children}
     </div>
   );
 };

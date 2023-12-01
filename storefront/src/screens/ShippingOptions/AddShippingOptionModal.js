@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Form, FormControl, InputGroup, Modal } from "react-bootstrap";
+import { Button, FormControl, InputGroup, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
 const AddShippingOptionModal = ({
