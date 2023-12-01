@@ -102,14 +102,32 @@ router.post("/", authenticateToken, async (req, res) => {
       const { addresses } = await shippingOptionsModel?.findOne({
         userId: req?.userId,
       });
-      const defaultAddress = addresses?.find((address) => address?.isDefault);
+      const {
+        cityProvince,
+        country,
+        isDefault,
+        line1,
+        line2,
+        pinCode,
+        state,
+        _id: addressId,
+      } = addresses?.find((address) => address?.isDefault);
       const cart = new cartModel({
         userId: user?._id,
         userName: user?.username,
         entries: [
           { product, description, supplier, productId: _id, quantity, price },
         ],
-        address: { ...defaultAddress },
+        address: {
+          cityProvince,
+          country,
+          isDefault,
+          line1,
+          line2,
+          pinCode,
+          state,
+          _id: addressId,
+        },
         totalPrice: {
           ...price,
           value: price?.value * quantity,

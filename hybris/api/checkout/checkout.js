@@ -1,7 +1,7 @@
 var express = require("express");
 const authenticateToken = require("../middleware/middleware");
-const UserModel = require("../user/UserModel");
 const cartModel = require("../cart/cartModel");
+const shippingOptionsModel = require("../shippingOptions/shippingOptionsModel");
 var router = express.Router();
 
 router.get("/:checkoutStep", authenticateToken, async (req, res) => {
@@ -11,7 +11,6 @@ router.get("/:checkoutStep", authenticateToken, async (req, res) => {
       const { address, primaryEmailAddress } = await cartModel.findOne({
         userId: req?.userId,
       });
-
       if (checkoutStep === 1) {
         //Validate Shipping Mode
         if (address && validateAddress(address)) {
@@ -20,7 +19,8 @@ router.get("/:checkoutStep", authenticateToken, async (req, res) => {
           });
         } else {
           return res.status(403).json({
-            message: "Invalid Step(1), Shipping Address required",
+            message:
+              "Invalid Step(1),Please provide a Shipping Address from Shipping Options page",
           });
         }
       } else if (checkoutStep === 2) {
@@ -122,6 +122,60 @@ router.post("/removeEmailAddress", authenticateToken, async (req, res) => {
   }
 });
 
+router.put("/updateCartAddress", authenticateToken, async (req, res) => {
+  try {
+    const { addressId } = req?.body;
+    const { addresses: shippingOptions } = await shippingOptionsModel.findOne({
+      userId: req?.userId,
+    });
+    const isAddressExists = shippingOptions?.find(
+      (shippingOption) => String(shippingOption?._id) === addressId
+    );
+    if (isAddressExists) {
+      const {
+        cityProvince,
+        country,
+        isDefault,
+        line1,
+        line2,
+        pinCode,
+        state,
+        _id: addressId,
+      } = isAddressExists;
+
+      result = await cartModel.findOneAndUpdate(
+        { userId: req?.userId },
+        {
+          $set: {
+            address: {
+              cityProvince,
+              country,
+              isDefault,
+              line1,
+              line2,
+              pinCode,
+              state,
+              _id: addressId,
+            },
+          },
+        },
+        { new: true }
+      );
+      return res.status(201).json({
+        message: "Updated cart address",
+      });
+    } else {
+      return res.status(404).json({
+        message: "You are not authorized to access this address",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      error,
+    });
+  }
+});
+
 const isSecondaryMailExists = (secondaryEmailAddresses, newMailId) => {
   for (const secondaryEmailAddress of secondaryEmailAddresses) {
     if (secondaryEmailAddress === newMailId) return true;
@@ -139,7 +193,7 @@ const validateAddress = (address) => {
     !address?.pinCode ||
     !address?.state ||
     !address?.country ||
-    !address?.isDefault
+    !String(address?.isDefault)
   ) {
     return false;
   } else {

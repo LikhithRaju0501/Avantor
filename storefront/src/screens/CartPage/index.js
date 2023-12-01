@@ -5,6 +5,7 @@ import CartItem from "./CartItem";
 import { CartSummary, CxSpinner } from "../../components";
 import { useGlobalMessage } from "../../components/GlobalMessageService/GlobalMessageService";
 import { useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
 
 const CartPage = () => {
   const { addMessage } = useGlobalMessage();
@@ -19,13 +20,6 @@ const CartPage = () => {
   };
   const onGetCartError = () => {
     addMessage("Failed to Fetch Cart", "error");
-  };
-  const navigateToCheckout = () => {
-    fetchValidateCheckout(1);
-  };
-  const navigateToCheckoutSuccess = () => navigate(`/checkout/1`);
-  const navigateToCheckoutError = (error) => {
-    addMessage(error?.response?.data?.message, "error");
   };
 
   const {
@@ -42,22 +36,17 @@ const CartPage = () => {
     error: deleteEntryError,
   } = useDeleteCartDetail(onDeleteSuccess, onDeleteError);
 
-  const {
-    isLoading: isValidateCheckoutLoading,
-    refetch: fetchValidateCheckout,
-  } = useGetNavigateToCheckoutStep(
-    1,
-    navigateToCheckoutSuccess,
-    navigateToCheckoutError
-  );
-
   const deleteCartEntry = (productId) => {
     mutate(productId);
   };
 
+  const navigateToCheckout = () => {
+    navigate("/checkout/1");
+  };
+
   return (
     <div style={{ padding: "1vh 10vw" }}>
-      {isLoading || isValidateCheckoutLoading || isDeleteLoading ? (
+      {isLoading || isDeleteLoading ? (
         <CxSpinner />
       ) : (
         <>
@@ -73,12 +62,11 @@ const CartPage = () => {
                   />
                 ))}
               </div>
-              <CartSummary
-                cart={data?.data}
-                isNextButton={true}
-                nextButtonHeader="Proceed to Checkout"
-                nextButtonClick={navigateToCheckout}
-              />
+              <CartSummary cart={data?.data}>
+                <Button className="w-100 mt-2" onClick={navigateToCheckout}>
+                  Proceed to Checkout
+                </Button>
+              </CartSummary>
             </div>
           ) : (
             <h2>Empty Cart</h2>

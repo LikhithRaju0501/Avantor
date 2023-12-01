@@ -14,6 +14,8 @@ import { AvtrNavbar } from "./components";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { QueryClientProvider, QueryClient } from "react-query";
 import { GlobalMessageProvider } from "./components/GlobalMessageService/GlobalMessageService";
+import { isLoggedIn } from "./api/register";
+import CheckoutStepsGuard from "./screens/CheckoutPage/CheckoutStepsGuard";
 
 const queryClient = new QueryClient();
 
@@ -34,16 +36,20 @@ class App extends Component {
               <Route exact path="/p/:productId" element={<ProductPage />} />
               <Route exact path="/register" element={<RegisterPage />} />
               <Route exact path="/login" element={<LoginPage />} />
-              <Route exact path="/cart" element={<CartPage />} />
               <Route
                 exact
-                path="/shipping-options"
-                element={<ShippingOptions />}
+                path="/cart"
+                element={isLoggedIn() ? <CartPage /> : <LoginPage />}
               />
               <Route
                 exact
-                path="/checkout/:checkoutStep"
-                element={<CheckoutPage />}
+                path="/shipping-options"
+                element={isLoggedIn() ? <ShippingOptions /> : <LoginPage />}
+              />
+              <Route
+                exact
+                path="/checkout/:checkoutStep/*"
+                element={isLoggedIn() ? <CheckoutStepsGuard /> : <LoginPage />}
               />
               <Route path="*" element={<PageNotFound />} />
             </Routes>

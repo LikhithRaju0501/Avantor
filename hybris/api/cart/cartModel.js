@@ -59,6 +59,10 @@ const dataSchema = new mongoose.Schema({
     },
   },
   address: {
+    _id: {
+      required: false,
+      type: mongoose.Schema.Types.ObjectId,
+    },
     line1: {
       type: String,
       required: true,
