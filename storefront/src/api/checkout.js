@@ -48,3 +48,51 @@ export const useUpdateDeliveryAddress = (onUpdateDeliveryAddressSuccess) => {
     onSuccess: onUpdateDeliveryAddressSuccess,
   });
 };
+
+const addEmailAddress = (email) => {
+  return axiosInstance.post(
+    `${constants.baseSiteId}checkout/addEmailAddress`,
+    { email },
+    {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    }
+  );
+};
+
+export const useAddEmailAddress = (
+  onAddEmailAddressSuccess,
+  onAddEmailAddressError
+) => {
+  return useMutation(["checkout"], addEmailAddress, {
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    onSuccess: onAddEmailAddressSuccess,
+    onError: onAddEmailAddressError,
+  });
+};
+
+const removeEmailAddress = (email) => {
+  return axiosInstance.delete(
+    `${constants.baseSiteId}checkout/removeEmailAddress`,
+    {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+      data: { email },
+    }
+  );
+};
+
+export const useRemoveEmailAddress = (
+  onDeleteEmailSuccess,
+  onRemoveEmailAddressError
+) => {
+  return useMutation(["checkout"], removeEmailAddress, {
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    onSuccess: onDeleteEmailSuccess,
+    onError: onRemoveEmailAddressError,
+  });
+};

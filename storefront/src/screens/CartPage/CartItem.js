@@ -5,12 +5,11 @@ import { Button } from "react-bootstrap";
 import { CxItemCounter } from "../../components";
 import { useForm, FormProvider } from "react-hook-form";
 
-const CartItem = ({ item, deleteCartEntry }) => {
+const CartItem = ({ item, deleteCartEntry, readOnly = false }) => {
   const { product, productId, supplier, description, quantity, price } = item;
-  const methods = useForm();
 
   return (
-    <div className="cartItem">
+    <div className="cartItem mb-4">
       <h4>
         <Link style={{ textDecoration: "none" }} to={`/p/${productId}`}>
           {product}
@@ -24,23 +23,19 @@ const CartItem = ({ item, deleteCartEntry }) => {
         <div>
           <span>Supplier</span> : {supplier?.supplierName || "-"}
         </div>
-      </div>
-      <div
-        className="d-flex justify-content-between"
-        style={{ marginTop: "20px", alignItems: "flex-end" }}
-      >
         <div>
-          <FormProvider {...methods}>
-            <CxItemCounter quantity={quantity} />
-          </FormProvider>
-          <Button style={{ marginTop: "15px" }} variant="primary">
-            Update Quantity
-          </Button>
+          <span>Quantity</span> : {quantity || "-"}
         </div>
-        <Button variant="danger" onClick={() => deleteCartEntry(productId)}>
+      </div>
+      {!readOnly && (
+        <Button
+          variant="danger"
+          onClick={() => deleteCartEntry(productId)}
+          className="mt-2"
+        >
           Remove Item
         </Button>
-      </div>
+      )}
     </div>
   );
 };
