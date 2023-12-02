@@ -31,6 +31,7 @@ router.get("/", authenticateToken, async (req, res) => {
 });
 router.post("/", authenticateToken, async (req, res) => {
   try {
+    //Need to implement sending mails
     const user = await UserModel.findById(req?.userId);
     const userCart = await cartModel.findOne({
       userId: req?.userId,
