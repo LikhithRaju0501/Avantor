@@ -29,11 +29,15 @@ const addShippingOption = (address) => {
   );
 };
 
-export const useAddShippingOption = (onAddShippingOptionSuccess) => {
+export const useAddShippingOption = (
+  onAddShippingOptionSuccess,
+  onAddShippingOptionError
+) => {
   return useMutation(["shipping-options"], addShippingOption, {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     onSuccess: onAddShippingOptionSuccess,
+    onError: onAddShippingOptionError,
   });
 };
 

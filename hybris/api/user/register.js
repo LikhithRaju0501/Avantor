@@ -1,11 +1,12 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const UserModel = require("./UserModel");
+const shippingOptionsModel = require("../shippingOptions/shippingOptionsModel");
 
 var router = express.Router();
 
 router.post("/", async (req, res) => {
-  const { username, email, password } = req?.body;
+  const { username, email, password, address } = req?.body;
 
   const isUser = await UserModel.findOne({ email });
   if (isUser)
@@ -22,9 +23,19 @@ router.post("/", async (req, res) => {
         password: hashedPassword,
       });
 
-      const result = await user.save();
+      const userResult = await user.save();
 
-      res.status(201).json({ message: "User registered successfully" });
+      const userAddress = new shippingOptionsModel({
+        userId: user?._id,
+        addresses: [{ ...address, isDefault: true }],
+      });
+      const addressResult = await userAddress.save();
+
+      res
+        .status(201)
+        .json({
+          message: "User registered successfully, Default Address Added",
+        });
     } catch (error) {
       console.error("Error registering user:", error);
       res.status(500).json({ message: "Error registering user" });
