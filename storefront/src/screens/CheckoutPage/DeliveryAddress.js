@@ -15,7 +15,6 @@ const DeliveryAddress = () => {
   const navigate = useNavigate();
   const onUpdateDeliveryAddressSuccess = () => {
     refetch();
-
     setChangeDeliveryAddress(false);
     addMessage("Updated Delivery Address", "success");
   };
@@ -33,6 +32,10 @@ const DeliveryAddress = () => {
     useUpdateDeliveryAddress(onUpdateDeliveryAddressSuccess);
 
   const setSelectedAddressId = (addressId) => {
+    if (data?.data?.addresses?._id === addressId) {
+      setChangeDeliveryAddress(false);
+      return;
+    }
     updateAddress(addressId);
   };
   return getCartLoading ? (
