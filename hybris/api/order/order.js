@@ -87,8 +87,6 @@ router.post("/", authenticateToken, async (req, res) => {
         message: "Cart not found.",
       });
     }
-
-    // console.log([...entries]);
   } catch (error) {
     return res.status(500).json({
       error,
