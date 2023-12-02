@@ -46,18 +46,18 @@ const ReviewOrder = () => {
   const onRemoveEmailAddressError = (error) => {
     addMessage(error?.response?.data?.message, "error");
   };
+
   const { isLoading: getCartLoading, data, refetch } = useGetCartDetails();
   const { isLoading: isUpdateAddressLoading, mutate: updateAddress } =
     useAddEmailAddress(onAddEmailAddressSuccess, onAddEmailAddressError);
-
   const { isLoading: isRemoveAddressLoading, mutate: removeAddress } =
     useRemoveEmailAddress(
       onRemoveEmailAddressSuccess,
       onRemoveEmailAddressError
     );
 
-  const formSubmit = (data) => {
-    updateAddress(data?.email);
+  const formSubmit = ({ email }) => {
+    updateAddress(email);
   };
   const removeEmailAddress = (email) => {
     removeAddress(email);
