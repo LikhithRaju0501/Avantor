@@ -52,6 +52,14 @@ router.post("/", authenticateToken, async (req, res) => {
           {
             $set: {
               "entries.$.quantity": Number(quantity) + Number(quantityToUpdate),
+              "entries.$.price": {
+                currency: price?.currency,
+                value:
+                  price?.value * (Number(quantity) + Number(quantityToUpdate)),
+                formattedValue: `${
+                  price?.value * (Number(quantity) + Number(quantityToUpdate))
+                }${price?.currency}`,
+              },
               totalPrice: {
                 currency: totalPriceToUpdate?.currency,
                 value: totalPriceToUpdate?.value + price?.value * quantity,
@@ -78,7 +86,13 @@ router.post("/", authenticateToken, async (req, res) => {
                 supplier,
                 productId: _id,
                 quantity,
-                price,
+                price: {
+                  currency: price?.currency,
+                  value: price?.value * quantity,
+                  formattedValue: `${price?.value * quantity}${
+                    price?.currency
+                  }`,
+                },
               },
             },
             $set: {
@@ -116,7 +130,18 @@ router.post("/", authenticateToken, async (req, res) => {
         userId: user?._id,
         userName: user?.username,
         entries: [
-          { product, description, supplier, productId: _id, quantity, price },
+          {
+            product,
+            description,
+            supplier,
+            productId: _id,
+            quantity,
+            price: {
+              currency: price?.currency,
+              value: price?.value * quantity,
+              formattedValue: `${price?.value * quantity}${price?.currency}`,
+            },
+          },
         ],
         address: {
           cityProvince,
@@ -181,13 +206,12 @@ router.delete("/", authenticateToken, async (req, res) => {
                 ...cartDetails?.totalPrice,
                 value: isEntryAvailable
                   ? cartDetails?.totalPrice?.value -
-                    isEntryAvailable?.price?.value * isEntryAvailable?.quantity
+                    isEntryAvailable?.price?.value
                   : cartDetails?.totalPrice?.value,
                 formattedValue: isEntryAvailable
                   ? `${
                       cartDetails?.totalPrice?.value -
-                      isEntryAvailable?.price?.value *
-                        isEntryAvailable?.quantity
+                      isEntryAvailable?.price?.value
                     }${cartDetails?.totalPrice?.currency}`
                   : cartDetails?.totalPrice?.formattedValue,
               },

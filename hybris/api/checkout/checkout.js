@@ -49,10 +49,14 @@ router.get("/:checkoutStep", authenticateToken, async (req, res) => {
 router.post("/addEmailAddress", authenticateToken, async (req, res) => {
   try {
     if (req?.body?.email) {
-      const { secondaryEmailAddress } = await cartModel.findOne({
-        userId: req?.userId,
-      });
-      if (isSecondaryMailExists(secondaryEmailAddress, req?.body?.email)) {
+      const { primaryEmailAddress, secondaryEmailAddress } =
+        await cartModel.findOne({
+          userId: req?.userId,
+        });
+      if (
+        isSecondaryMailExists(secondaryEmailAddress, req?.body?.email) ||
+        primaryEmailAddress === req?.body?.email
+      ) {
         return res.status(403).json({
           message: "Email Address already exists",
         });
@@ -81,7 +85,7 @@ router.post("/addEmailAddress", authenticateToken, async (req, res) => {
     });
   }
 });
-router.post("/removeEmailAddress", authenticateToken, async (req, res) => {
+router.delete("/removeEmailAddress", authenticateToken, async (req, res) => {
   try {
     if (req?.body?.email) {
       const { secondaryEmailAddress } = await cartModel.findOne({
