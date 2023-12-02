@@ -8,7 +8,7 @@ const CxStepper = ({ activeStep, steps }) => {
   return (
     <Box sx={{ width: "100%" }}>
       <Stepper activeStep={Number(activeStep)} alternativeLabel>
-        {steps.map((label) => (
+        {steps?.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
           </Step>
