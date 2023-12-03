@@ -7,6 +7,7 @@ import { useGlobalMessage } from "../../components/GlobalMessageService/GlobalMe
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 
+// https://colorlib.com/wp/template/table-06/
 const CartPage = () => {
   const { addMessage } = useGlobalMessage();
   let navigate = useNavigate();

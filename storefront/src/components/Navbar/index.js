@@ -30,7 +30,9 @@ const AvtrNavbar = () => {
             {loggedIn && (
               <>
                 <NavDropdown title="My Account" id="navbarScrollingDropdown">
-                  <NavDropdown.Item>My Orders</NavDropdown.Item>
+                  <NavDropdown.Item href={"/orders"}>
+                    My Orders
+                  </NavDropdown.Item>
                   <NavDropdown.Item href={"/shipping-options"}>
                     Shipping Options
                   </NavDropdown.Item>

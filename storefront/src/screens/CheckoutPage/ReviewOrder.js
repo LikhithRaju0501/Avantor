@@ -7,6 +7,7 @@ import { useGlobalMessage } from "../../components/GlobalMessageService/GlobalMe
 import { CartSummary, CxSpinner } from "../../components";
 import CartItem from "../CartPage/CartItem";
 import { useNavigate } from "react-router";
+import { usePlaceOrder } from "../../api/orders";
 const ReviewOrder = () => {
   const {
     register,
@@ -38,12 +39,20 @@ const ReviewOrder = () => {
     addMessage("Removed Email Address", "success");
   };
 
+  const onPlaceOrderSuccess = () => {
+    navigate("/orders");
+  };
+
   const onAddEmailAddressError = (error) => {
     reset();
     addMessage(error?.response?.data?.message, "error");
   };
 
   const onRemoveEmailAddressError = (error) => {
+    addMessage(error?.response?.data?.message, "error");
+  };
+
+  const onPlaceOrderError = (error) => {
     addMessage(error?.response?.data?.message, "error");
   };
 
@@ -56,13 +65,24 @@ const ReviewOrder = () => {
       onRemoveEmailAddressError
     );
 
+  const { isLoading: isPlaceOrderLoading, mutate: placeOrder } = usePlaceOrder(
+    onPlaceOrderSuccess,
+    onPlaceOrderError
+  );
+
   const formSubmit = ({ email }) => {
     updateAddress(email);
   };
   const removeEmailAddress = (email) => {
     removeAddress(email);
   };
-  return getCartLoading || isUpdateAddressLoading || isRemoveAddressLoading ? (
+  const createOrder = () => {
+    placeOrder();
+  };
+  return getCartLoading ||
+    isUpdateAddressLoading ||
+    isRemoveAddressLoading ||
+    isPlaceOrderLoading ? (
     <CxSpinner />
   ) : (
     <div className="d-flex justify-content-between p-4 ">
@@ -142,7 +162,9 @@ const ReviewOrder = () => {
       </div>
       <div>
         <CartSummary cart={data?.data}>
-          <Button className="w-100 mt-2">Place Order</Button>
+          <Button className="w-100 mt-2" onClick={createOrder}>
+            Place Order
+          </Button>
         </CartSummary>
       </div>
     </div>

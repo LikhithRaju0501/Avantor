@@ -4,6 +4,7 @@ import {
   CheckoutPage,
   Homepage,
   LoginPage,
+  OrdersPage,
   PageNotFound,
   ProductPage,
   RegisterPage,
@@ -50,6 +51,12 @@ class App extends Component {
                 exact
                 path="/checkout/:checkoutStep/*"
                 element={isLoggedIn() ? <CheckoutStepsGuard /> : <LoginPage />}
+              />
+
+              <Route
+                exact
+                path="/orders"
+                element={isLoggedIn() ? <OrdersPage /> : <LoginPage />}
               />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
