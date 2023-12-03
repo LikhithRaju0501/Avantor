@@ -40,7 +40,7 @@ app.use("/login", loginRoute);
 app.use("/cart", cartRoute);
 app.use("/shipping-options", shippingOptionsRoute);
 app.use("/checkout", checkoutRoute);
-app.use("/order", orderRoute);
+app.use("/orders", orderRoute);
 
 // Define a route for the home page
 
