@@ -5,6 +5,7 @@ const orderModel = require("./orderModel");
 const UserModel = require("../user/UserModel");
 var router = express.Router();
 const moment = require("moment-timezone");
+const nodemailer = require("nodemailer");
 
 router.get("/", authenticateToken, async (req, res) => {
   try {
@@ -66,7 +67,39 @@ router.post("/", authenticateToken, async (req, res) => {
           },
           { new: true }
         );
-        const deleteCart = await cartModel.deleteOne({ _id: userCart?._id });
+        // const deleteCart = await cartModel.deleteOne({ _id: userCart?._id });
+        const emailList = ["likkigraju@gmail.com"];
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: "lgrajutwitter@gmail.com",
+            pass: "likhith@0607",
+          },
+        });
+
+        // Email content
+        const mailOptions = {
+          from: "likhithgraju@gmail.com",
+          subject: "Subject of the email",
+          text: "Body of the email",
+        };
+
+        emailList.forEach((email) => {
+          mailOptions.to = email; // Set current recipient
+
+          // Send email
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.error(`Error sending email to ${email}:`, error);
+            } else {
+              console.log(
+                `Email sent successfully to ${email}:`,
+                info.response
+              );
+            }
+          });
+        });
+
         return res.status(201).json({
           message: "Orders exists, Added order",
         });
@@ -78,7 +111,7 @@ router.post("/", authenticateToken, async (req, res) => {
         });
 
         result = await currentOrder.save();
-        const deleteCart = await cartModel.deleteOne({ _id: userCart?._id });
+        // const deleteCart = await cartModel.deleteOne({ _id: userCart?._id });
         return res.status(201).json({
           message: "Created New Order",
         });
