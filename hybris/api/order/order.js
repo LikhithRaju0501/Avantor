@@ -13,6 +13,7 @@ router.get("/", authenticateToken, async (req, res) => {
     const user = await UserModel.findById(req?.userId).lean();
     const currentPage = parseInt(req?.query?.currentPage) || 0;
     const pageSize = parseInt(req?.query?.pageSize) || 10;
+    const sort = req?.query?.sort || "createdAt";
     const userOrders = await orderModel
       .findOne({ userId: req?.userId })
       .select("orders");
@@ -20,16 +21,34 @@ router.get("/", authenticateToken, async (req, res) => {
       const totalResults = userOrders?.orders?.length;
       const totalPages = Math.ceil(totalResults / pageSize);
       const paginatedOrders = getPaginatedData(
-        userOrders?.orders,
+        normalizeOrders(userOrders?.orders, sort),
         currentPage,
         pageSize,
         totalPages,
         totalResults
       );
+
       return res.status(200).json({
         ...userOrders?.toObject(),
         orders: [...paginatedOrders?.entries],
         pagination: { ...paginatedOrders?.pagination },
+        sorts: [
+          {
+            id: "createdAt",
+            title: "Date Placed",
+            selected: sort === "createdAt",
+          },
+          {
+            id: "numberOfItems",
+            title: "Number Of Items",
+            selected: sort === "numberOfItems",
+          },
+          {
+            id: "totalPrice",
+            title: "Total Price",
+            selected: sort === "totalPrice",
+          },
+        ],
         type: "OrderWSDTO",
       });
     } else {
@@ -37,6 +56,23 @@ router.get("/", authenticateToken, async (req, res) => {
         userId: user?._id,
         userName: user?.username,
         orders: [],
+        sorts: [
+          {
+            id: "createdAt",
+            title: "Date Placed",
+            selected: true,
+          },
+          {
+            id: "numberOfItems",
+            title: "Number Of Items",
+            selected: false,
+          },
+          {
+            id: "totalPrice",
+            title: "Total Price",
+            selected: false,
+          },
+        ],
         pagination: {
           currentPage: 0,
           pageSize: 0,
@@ -54,7 +90,6 @@ router.get("/", authenticateToken, async (req, res) => {
 });
 router.post("/", authenticateToken, async (req, res) => {
   try {
-    //Need to implement sending mails
     const user = await UserModel.findById(req?.userId);
     const userCart = await cartModel.findOne({
       userId: req?.userId,
@@ -132,6 +167,14 @@ router.post("/", authenticateToken, async (req, res) => {
     });
   }
 });
+
+const normalizeOrders = (orders, sort = "createdAt") => {
+  return orders?.sort((a, b) => {
+    return sort === "totalPrice"
+      ? new Date(b?.[sort]?.value) - new Date(a?.[sort]?.value)
+      : new Date(b?.[sort]) - new Date(a?.[sort]);
+  });
+};
 
 const generateTableRows = (entries) => {
   let tableRows = "";

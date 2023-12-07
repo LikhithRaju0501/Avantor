@@ -8,34 +8,13 @@ const OrderItems = ({ order }) => {
     order;
 
   return (
-    <li
-      key={_id}
-      style={{
-        borderRadius: "3px",
-        padding: "25px 30px",
-        display: "flex",
-        justifyContent: "space-between",
-        marginBottom: "25px",
-        backgroundColor: "#ffffff",
-        boxShadow: "0px 0px 9px 0px rgba(0,0,0,0.1)",
-      }}
-    >
-      <div style={{ flexBasis: "20%" }} className="text-break p-2">
-        {_id}
-      </div>
-      <div style={{ flexBasis: "20%" }} className="text-break p-2">
-        {new Date(createdAt).toLocaleDateString()}
-      </div>
-      <div style={{ flexBasis: "10%" }} className="text-break p-2">
-        {numberOfItems}
-      </div>
-      <div style={{ flexBasis: "20%" }} className="text-break p-2">
-        {orderStatus}
-      </div>
-      <div style={{ flexBasis: "20%" }} className="text-break p-2">
-        {totalPrice?.formattedValue}
-      </div>
-      <div style={{ flexBasis: "10%" }} className="text-break p-2">
+    <tr>
+      <td>{_id}</td>
+      <td>{new Date(createdAt).toLocaleDateString()}</td>
+      <td>{numberOfItems}</td>
+      <td>{orderStatus}</td>
+      <td> {totalPrice?.formattedValue}</td>
+      <td>
         <Button onClick={() => setShowModal(true)}>View</Button>
         <OrderItemsModal
           entries={entries}
@@ -43,8 +22,8 @@ const OrderItems = ({ order }) => {
           show={showModal}
           onHide={() => setShowModal(false)}
         />
-      </div>
-    </li>
+      </td>
+    </tr>
   );
 };
 

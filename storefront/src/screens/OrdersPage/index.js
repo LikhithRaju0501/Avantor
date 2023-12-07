@@ -3,13 +3,17 @@ import { useGetOrders } from "../../api/orders";
 import { CxPagination, CxSpinner } from "../../components";
 import OrderItems from "./OrderItems";
 import { useSearchParams } from "react-router-dom";
+import { Form, Table } from "react-bootstrap";
 
 const OrdersPage = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = Number(searchParams?.get("currentPage")) || 0;
-  const { data: ordersData, isLoading: isOrdersLoading } =
-    useGetOrders(currentPage);
+  const sort = searchParams?.get("sort") || "createdAt";
+  const { data: ordersData, isLoading: isOrdersLoading } = useGetOrders(
+    currentPage,
+    sort
+  );
 
   let paginationModel = {
     pageSize: 0,
@@ -18,15 +22,50 @@ const OrdersPage = () => {
     totalPages: 0,
   };
 
+  const defaultSelectedId =
+    ordersData?.data?.sorts?.find((option) => option?.selected)?.id || "";
+
   if (!isOrdersLoading) {
     paginationModel = { currentPage, ...ordersData?.data?.pagination };
   }
+
+  const onSortChange = (event) => {
+    const sortId = event?.target?.value;
+    const params = new URLSearchParams(searchParams);
+    if (sortId === "createdAt") {
+      searchParams?.delete("sort");
+      setSearchParams(searchParams);
+    } else {
+      params?.set("sort", sortId);
+      setSearchParams(params?.toString());
+    }
+  };
   return isOrdersLoading ? (
     <CxSpinner />
   ) : (
     <div className="p-4">
       <div className="d-flex">
-        <div style={{ flexBasis: "25%" }}>Facets</div>
+        <div style={{ flexBasis: "25%" }}>
+          <div
+            style={{
+              padding: "10px",
+            }}
+          >
+            <h3>Sort by latest:</h3>
+            <Form.Select
+              aria-label="Default select example"
+              defaultValue={defaultSelectedId}
+              onChange={onSortChange}
+              style={{ cursor: "pointer" }}
+            >
+              {ordersData?.data?.sorts?.map((option) => (
+                <option key={option?.id} value={option?.id}>
+                  {option?.title}
+                </option>
+              ))}
+            </Form.Select>
+          </div>
+        </div>
         <div style={{ flexBasis: "75%" }}>
           <div
             style={{
@@ -37,61 +76,30 @@ const OrdersPage = () => {
             }}
           >
             <h2>Order History</h2>
-            <ul style={{ listStyle: "none", padding: "0" }}>
-              <li
-                style={{
-                  borderRadius: "3px",
-                  padding: "25px 30px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "25px",
-                  backgroundColor: "#95A5A6",
-                  fontSize: "14px",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.03em",
-                }}
-              >
-                <div
-                  style={{ flexBasis: "20%" }}
-                  className="text-break fw-bold p-2"
-                >
-                  Order#
-                </div>
-                <div
-                  style={{ flexBasis: "20%" }}
-                  className="text-break fw-bold p-2"
-                >
-                  Date Placed
-                </div>
-                <div
-                  style={{ flexBasis: "10%" }}
-                  className="text-break fw-bold p-2"
-                >
-                  Number of Items
-                </div>
-                <div
-                  style={{ flexBasis: "20%" }}
-                  className="text-break fw-bold p-2"
-                >
-                  Order Status
-                </div>
-                <div
-                  style={{ flexBasis: "20%" }}
-                  className="text-break fw-bold p-2"
-                >
-                  Price
-                </div>
-                <div
-                  style={{ flexBasis: "10%" }}
-                  className="text-break fw-bold p-2"
-                >
-                  Items
-                </div>
-              </li>
-              {ordersData?.data?.orders?.map((order) => {
-                return <OrderItems key={order?._id} order={order} />;
-              })}
-            </ul>
+            <div>
+              <span className="fw-bold text-break">Note: </span>
+              <span className="text-break">
+                It might take time for us to deliver the Order Confirmation mail
+                for orders that you placed recently (if any).
+              </span>
+            </div>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Order#</th>
+                  <th> Date Placed</th>
+                  <th>Number of Items</th>
+                  <th>Order Status</th>
+                  <th>Price</th>
+                  <th>Items</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ordersData?.data?.orders?.map((order) => {
+                  return <OrderItems key={order?._id} order={order} />;
+                })}
+              </tbody>
+            </Table>
           </div>
         </div>
       </div>
