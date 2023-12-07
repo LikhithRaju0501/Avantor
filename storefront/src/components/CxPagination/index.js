@@ -8,10 +8,15 @@ const CxPagination = ({ paginationModel }) => {
   const getMin = (a, b) => (a < b ? a : b);
   const getMax = (a, b) => (a < b ? b : a);
   const paginatedEvent = (pageNumber) => {
+    const params = new URLSearchParams(searchParams);
+
     if (pageNumber === 0) {
       searchParams.delete("currentPage");
       setSearchParams(searchParams);
-    } else setSearchParams({ ["currentPage"]: pageNumber });
+    } else {
+      params?.set("currentPage", pageNumber);
+      setSearchParams(params?.toString());
+    }
   };
   return (
     paginationModel?.totalPages > 1 && (
