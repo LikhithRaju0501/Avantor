@@ -19,7 +19,7 @@ const AvtrNavbar = () => {
   return (
     <Navbar expand="lg">
       <Container fluid>
-        <Navbar.Brand href="/">Avantor</Navbar.Brand>
+        <Navbar.Brand href="/">Ammijan</Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav
