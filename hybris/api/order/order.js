@@ -6,14 +6,28 @@ const UserModel = require("../user/UserModel");
 var router = express.Router();
 const moment = require("moment-timezone");
 const nodemailer = require("nodemailer");
+const { getPaginatedData } = require("../search/resuableMethods");
 
 router.get("/", authenticateToken, async (req, res) => {
   try {
     const user = await UserModel.findById(req?.userId);
+    const currentPage = parseInt(req?.query?.currentPage) || 0;
+    const pageSize = parseInt(req?.query?.pageSize) || 10;
     const userOrders = await orderModel.findOne({ userId: req?.userId });
     if (userOrders) {
+      const totalResults = userOrders?.orders?.length;
+      const totalPages = Math.ceil(totalResults / pageSize);
+      const paginatedOrders = getPaginatedData(
+        userOrders?.orders,
+        currentPage,
+        pageSize,
+        totalPages,
+        totalResults
+      );
       return res.status(200).json({
         ...userOrders?.toObject(),
+        orders: [...paginatedOrders?.entries],
+        pagination: { ...paginatedOrders?.pagination },
         type: "OrderWSDTO",
       });
     } else {

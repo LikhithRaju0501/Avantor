@@ -2,16 +2,19 @@ import { useMutation, useQuery } from "react-query";
 import { constants } from "./apiUrls";
 import { axiosInstance } from "./interceptor";
 
-const fetchOrders = () => {
-  return axiosInstance.get(`${constants.baseSiteId}orders`, {
-    headers: {
-      Authorization: localStorage.getItem("token"),
-    },
-  });
+const fetchOrders = (currentPage) => {
+  return axiosInstance.get(
+    `${constants.baseSiteId}orders?currentPage=${currentPage}`,
+    {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    }
+  );
 };
 
-export const useGetOrders = () => {
-  return useQuery(["orders"], () => fetchOrders(), {
+export const useGetOrders = (currentPage) => {
+  return useQuery(["orders", currentPage], () => fetchOrders(currentPage), {
     refetchOnMount: true,
     refetchOnWindowFocus: false,
   });

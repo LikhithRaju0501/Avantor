@@ -23,8 +23,8 @@ const getPaginatedData = (
   return {
     entries: [...entriesToSend],
     pagination: { currentPage, pageSize, totalPages, totalResults },
-    searchTerm,
-    currentQuery,
+    ...(searchTerm && { searchTerm }),
+    ...(currentQuery && { currentQuery }),
   };
 };
 
