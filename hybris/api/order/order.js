@@ -10,10 +10,12 @@ const { getPaginatedData } = require("../search/resuableMethods");
 
 router.get("/", authenticateToken, async (req, res) => {
   try {
-    const user = await UserModel.findById(req?.userId);
+    const user = await UserModel.findById(req?.userId).lean();
     const currentPage = parseInt(req?.query?.currentPage) || 0;
     const pageSize = parseInt(req?.query?.pageSize) || 10;
-    const userOrders = await orderModel.findOne({ userId: req?.userId });
+    const userOrders = await orderModel
+      .findOne({ userId: req?.userId })
+      .select("orders");
     if (userOrders) {
       const totalResults = userOrders?.orders?.length;
       const totalPages = Math.ceil(totalResults / pageSize);
