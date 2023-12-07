@@ -38,10 +38,7 @@ const SearchPage = () => {
               <h3>Facets</h3>
             </section>
             <div>
-              <CxPagination
-                paginationModel={paginationModel}
-                paginatedEvent={(event) => paginatedEvent(event)}
-              />
+              <CxPagination paginationModel={paginationModel} />
               {data?.data?.entries.length === 0 ? (
                 <h2>No Results for this term</h2>
               ) : (

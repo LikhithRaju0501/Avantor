@@ -1,10 +1,26 @@
 import React from "react";
 import { useGetOrders } from "../../api/orders";
-import { CxSpinner } from "../../components";
+import { CxPagination, CxSpinner } from "../../components";
 import OrderItems from "./OrderItems";
+import { useSearchParams } from "react-router-dom";
 
 const OrdersPage = () => {
-  const { data: ordersData, isLoading: isOrdersLoading } = useGetOrders();
+  const [searchParams] = useSearchParams();
+
+  const currentPage = Number(searchParams?.get("currentPage")) || 0;
+  const { data: ordersData, isLoading: isOrdersLoading } =
+    useGetOrders(currentPage);
+
+  let paginationModel = {
+    pageSize: 0,
+    totalResults: 0,
+    currentPage,
+    totalPages: 0,
+  };
+
+  if (!isOrdersLoading) {
+    paginationModel = { currentPage, ...ordersData?.data?.pagination };
+  }
   return isOrdersLoading ? (
     <CxSpinner />
   ) : (
@@ -78,6 +94,9 @@ const OrdersPage = () => {
             </ul>
           </div>
         </div>
+      </div>
+      <div className="d-flex justify-content-center">
+        <CxPagination paginationModel={paginationModel} />
       </div>
     </div>
   );
