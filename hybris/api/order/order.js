@@ -35,6 +35,12 @@ router.get("/", authenticateToken, async (req, res) => {
         userId: user?._id,
         userName: user?.username,
         orders: [],
+        pagination: {
+          currentPage: 0,
+          pageSize: 0,
+          totalPages: 0,
+          totalResults: 0,
+        },
         type: "OrderWSDTO",
       });
     }
