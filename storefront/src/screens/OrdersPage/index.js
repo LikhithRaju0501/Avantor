@@ -53,7 +53,6 @@ const OrdersPage = () => {
           >
             <h3>Sort by latest:</h3>
             <Form.Select
-              aria-label="Default select example"
               defaultValue={defaultSelectedId}
               onChange={onSortChange}
               style={{ cursor: "pointer" }}
