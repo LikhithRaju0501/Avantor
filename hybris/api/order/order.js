@@ -14,14 +14,20 @@ router.get("/", authenticateToken, async (req, res) => {
     const currentPage = parseInt(req?.query?.currentPage) || 0;
     const pageSize = parseInt(req?.query?.pageSize) || 10;
     const sort = req?.query?.sort || "createdAt-desc";
+    const orderedDate = req?.query?.orderedDate || "";
     const userOrders = await orderModel
       .findOne({ userId: req?.userId })
       .select("orders");
     if (userOrders) {
-      const totalResults = userOrders?.orders?.length;
+      const normalizedOrders = normalizeOrders(
+        userOrders?.orders,
+        sort,
+        orderedDate
+      );
+      const totalResults = normalizedOrders?.length;
       const totalPages = Math.ceil(totalResults / pageSize);
       const paginatedOrders = getPaginatedData(
-        normalizeOrders(userOrders?.orders, sort),
+        normalizedOrders,
         currentPage,
         pageSize,
         totalPages,
@@ -33,6 +39,8 @@ router.get("/", authenticateToken, async (req, res) => {
         orders: [...paginatedOrders?.entries],
         pagination: { ...paginatedOrders?.pagination },
         sorts: [...generateSorts(sort)],
+        dateRange: [...generateDateFacets(orderedDate)],
+        breadcrumbs: [...generateBreadcrumbs(sort, orderedDate)],
         type: "OrderWSDTO",
       });
     } else {
@@ -41,6 +49,8 @@ router.get("/", authenticateToken, async (req, res) => {
         userName: user?.username,
         orders: [],
         sorts: [...generateSorts(sort)],
+        dateRange: [...generateDateFacets(orderedDate)],
+        breadcrumbs: [...generateBreadcrumbs(sort, orderedDate)],
         pagination: {
           currentPage: 0,
           pageSize: 0,
@@ -136,6 +146,43 @@ router.post("/", authenticateToken, async (req, res) => {
   }
 });
 
+const generateBreadcrumbs = (sort, orderedDate) => {
+  const dateRangeOptions = ["today", "last7days", "last30days"];
+  const sortOptions = [
+    "createdAt-asc",
+    "createdAt-desc",
+    "numberOfItems-asc",
+    "numberOfItems-desc",
+    "totalPrice-asc",
+    "totalPrice-desc",
+  ];
+  const translations = {
+    "createdAt-asc": "Date Placed (0-1)",
+    "createdAt-desc": "Date Placed (1-0)",
+    "numberOfItems-asc": "Number Of Items(0-1)",
+    "numberOfItems-desc": "Number Of Items(1-0)",
+    "totalPrice-asc": "Total Price(0-1)",
+    "totalPrice-desc": "Total Price(1-0)",
+    today: "Today",
+    last7days: "Last 7 Days",
+    last30days: "Last 30 Days",
+  };
+  return [
+    {
+      id: sortOptions?.includes(sort) ? sort : "createdAt-desc",
+      type: "sort",
+      title: translations?.[sort] || "Date Placed (1-0)",
+      isDefault: sort === "createdAt-desc" ? true : false,
+    },
+    {
+      id: dateRangeOptions?.includes(orderedDate) ? orderedDate : "all",
+      type: "orderedDate",
+      title: translations?.[orderedDate] || "All",
+      isDefault: !dateRangeOptions?.includes(orderedDate) ? true : false,
+    },
+  ];
+};
+
 const generateSorts = (sort) => {
   return [
     {
@@ -171,9 +218,36 @@ const generateSorts = (sort) => {
   ];
 };
 
-const normalizeOrders = (orders, sort = "createdAt-desc") => {
+const generateDateFacets = (orderedDate) => {
+  const dateRangeOptions = ["today", "last7days", "last30days"];
+  return [
+    {
+      id: "all",
+      title: "All",
+      selected: !dateRangeOptions?.includes(orderedDate),
+    },
+    {
+      id: "today",
+      title: "Today",
+      selected: orderedDate === "today",
+    },
+    {
+      id: "last7days",
+      title: "Last 7 Days",
+      selected: orderedDate === "last7days",
+    },
+    {
+      id: "last30days",
+      title: "Last 30 Days",
+      selected: orderedDate === "last30days",
+    },
+  ];
+};
+
+const normalizeOrders = (orders, sort = "createdAt-desc", orderedDate = "") => {
+  const dateFilteredOrders = getDateRangeOrders(orders, orderedDate);
   const sortParams = sort?.split("-");
-  return orders?.sort((a, b) => {
+  return dateFilteredOrders?.sort((a, b) => {
     if (sortParams?.[0] === "totalPrice") {
       return sortParams?.[1] === "desc"
         ? b?.totalPrice?.value - a?.totalPrice?.value
@@ -188,6 +262,32 @@ const normalizeOrders = (orders, sort = "createdAt-desc") => {
         : a?.[sortParams[0]] - b?.[sortParams[0]];
     }
   });
+};
+
+const getDateRangeOrders = (orders = [], orderedDate = "") => {
+  if (orderedDate === "today") {
+    return orders?.filter((order) => {
+      return (
+        order?.createdAt?.getDate() === new Date().getDate() &&
+        order?.createdAt?.getMonth() === new Date().getMonth() &&
+        order?.createdAt?.getFullYear() === new Date().getFullYear()
+      );
+    });
+  } else if (orderedDate === "last7days") {
+    const sevenDaysAgo = new Date(
+      new Date()?.getTime() - 7 * 24 * 60 * 60 * 1000
+    );
+    return orders?.filter((order) => {
+      return order?.createdAt >= sevenDaysAgo && order?.createdAt <= new Date();
+    });
+  } else if (orderedDate === "last30days") {
+    const last30Days = new Date(
+      new Date()?.getTime() - 30 * 24 * 60 * 60 * 1000
+    );
+    return orders?.filter((order) => {
+      return order?.createdAt >= last30Days && order?.createdAt <= new Date();
+    });
+  } else return orders;
 };
 
 const generateTableRows = (entries) => {
