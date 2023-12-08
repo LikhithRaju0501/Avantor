@@ -157,12 +157,12 @@ const generateBreadcrumbs = (sort, orderedDate) => {
     "totalPrice-desc",
   ];
   const translations = {
-    "createdAt-asc": "Date Placed (0-1)",
-    "createdAt-desc": "Date Placed (1-0)",
-    "numberOfItems-asc": "Number Of Items(0-1)",
-    "numberOfItems-desc": "Number Of Items(1-0)",
-    "totalPrice-asc": "Total Price(0-1)",
-    "totalPrice-desc": "Total Price(1-0)",
+    "createdAt-asc": "Date Placed (Low-High)",
+    "createdAt-desc": "Date Placed (High-Low)",
+    "numberOfItems-asc": "Number Of Items(Low-High)",
+    "numberOfItems-desc": "Number Of Items(High-Low)",
+    "totalPrice-asc": "Total Price(Low-High)",
+    "totalPrice-desc": "Total Price(High-Low)",
     today: "Today",
     last7days: "Last 7 Days",
     last30days: "Last 30 Days",
@@ -171,7 +171,7 @@ const generateBreadcrumbs = (sort, orderedDate) => {
     {
       id: sortOptions?.includes(sort) ? sort : "createdAt-desc",
       type: "sort",
-      title: translations?.[sort] || "Date Placed (1-0)",
+      title: translations?.[sort] || "Date Placed (High-Low)",
       isDefault: sort === "createdAt-desc" ? true : false,
     },
     {
@@ -187,32 +187,32 @@ const generateSorts = (sort) => {
   return [
     {
       id: "createdAt-asc",
-      title: "Date Placed (0 - 1)",
+      title: "Date Placed (Low-High)",
       selected: sort === "createdAt-asc",
     },
     {
       id: "createdAt-desc",
-      title: "Date Placed (1 - 0)",
+      title: "Date Placed (High-Low)",
       selected: sort === "createdAt-desc",
     },
     {
       id: "numberOfItems-asc",
-      title: "Number Of Items(0-1)",
+      title: "Number Of Items(Low-High)",
       selected: sort === "numberOfItems-asc",
     },
     {
       id: "numberOfItems-desc",
-      title: "Number Of Items(1-0)",
+      title: "Number Of Items(High-Low)",
       selected: sort === "numberOfItems-desc",
     },
     {
       id: "totalPrice-asc",
-      title: "Total Price(0-1)",
+      title: "Total Price(Low-High)",
       selected: sort === "totalPrice-asc",
     },
     {
       id: "totalPrice-desc",
-      title: "Total Price(1-0)",
+      title: "Total Price(High-Low)",
       selected: sort === "totalPrice-desc",
     },
   ];
