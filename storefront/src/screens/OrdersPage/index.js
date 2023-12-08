@@ -9,7 +9,7 @@ const OrdersPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = Number(searchParams?.get("currentPage")) || 0;
-  const sort = searchParams?.get("sort") || "createdAt";
+  const sort = searchParams?.get("sort") || "createdAt-desc";
   const { data: ordersData, isLoading: isOrdersLoading } = useGetOrders(
     currentPage,
     sort
@@ -32,7 +32,7 @@ const OrdersPage = () => {
   const onSortChange = (event) => {
     const sortId = event?.target?.value;
     const params = new URLSearchParams(searchParams);
-    if (sortId === "createdAt") {
+    if (sortId === "createdAt-desc") {
       searchParams?.delete("sort");
       setSearchParams(searchParams);
     } else {

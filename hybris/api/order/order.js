@@ -13,7 +13,7 @@ router.get("/", authenticateToken, async (req, res) => {
     const user = await UserModel.findById(req?.userId).lean();
     const currentPage = parseInt(req?.query?.currentPage) || 0;
     const pageSize = parseInt(req?.query?.pageSize) || 10;
-    const sort = req?.query?.sort || "createdAt";
+    const sort = req?.query?.sort || "createdAt-desc";
     const userOrders = await orderModel
       .findOne({ userId: req?.userId })
       .select("orders");
@@ -32,23 +32,7 @@ router.get("/", authenticateToken, async (req, res) => {
         ...userOrders?.toObject(),
         orders: [...paginatedOrders?.entries],
         pagination: { ...paginatedOrders?.pagination },
-        sorts: [
-          {
-            id: "createdAt",
-            title: "Date Placed",
-            selected: sort === "createdAt",
-          },
-          {
-            id: "numberOfItems",
-            title: "Number Of Items",
-            selected: sort === "numberOfItems",
-          },
-          {
-            id: "totalPrice",
-            title: "Total Price",
-            selected: sort === "totalPrice",
-          },
-        ],
+        sorts: [...generateSorts(sort)],
         type: "OrderWSDTO",
       });
     } else {
@@ -56,23 +40,7 @@ router.get("/", authenticateToken, async (req, res) => {
         userId: user?._id,
         userName: user?.username,
         orders: [],
-        sorts: [
-          {
-            id: "createdAt",
-            title: "Date Placed",
-            selected: true,
-          },
-          {
-            id: "numberOfItems",
-            title: "Number Of Items",
-            selected: false,
-          },
-          {
-            id: "totalPrice",
-            title: "Total Price",
-            selected: false,
-          },
-        ],
+        sorts: [...generateSorts(sort)],
         pagination: {
           currentPage: 0,
           pageSize: 0,
@@ -168,11 +136,57 @@ router.post("/", authenticateToken, async (req, res) => {
   }
 });
 
-const normalizeOrders = (orders, sort = "createdAt") => {
+const generateSorts = (sort) => {
+  return [
+    {
+      id: "createdAt-asc",
+      title: "Date Placed (0 - 1)",
+      selected: sort === "createdAt-asc",
+    },
+    {
+      id: "createdAt-desc",
+      title: "Date Placed (1 - 0)",
+      selected: sort === "createdAt-desc",
+    },
+    {
+      id: "numberOfItems-asc",
+      title: "Number Of Items(0-1)",
+      selected: sort === "numberOfItems-asc",
+    },
+    {
+      id: "numberOfItems-desc",
+      title: "Number Of Items(1-0)",
+      selected: sort === "numberOfItems-desc",
+    },
+    {
+      id: "totalPrice-asc",
+      title: "Total Price(0-1)",
+      selected: sort === "totalPrice-asc",
+    },
+    {
+      id: "totalPrice-desc",
+      title: "Total Price(1-0)",
+      selected: sort === "totalPrice-desc",
+    },
+  ];
+};
+
+const normalizeOrders = (orders, sort = "createdAt-desc") => {
+  const sortParams = sort?.split("-");
   return orders?.sort((a, b) => {
-    return sort === "totalPrice"
-      ? new Date(b?.[sort]?.value) - new Date(a?.[sort]?.value)
-      : new Date(b?.[sort]) - new Date(a?.[sort]);
+    if (sortParams?.[0] === "totalPrice") {
+      return sortParams?.[1] === "desc"
+        ? b?.totalPrice?.value - a?.totalPrice?.value
+        : a?.totalPrice?.value - b?.totalPrice?.value;
+    } else if (sortParams?.[0] === "createdAt") {
+      return sortParams?.[1] === "desc"
+        ? new Date(b?.createdAt) - new Date(a?.createdAt)
+        : new Date(a?.createdAt) - new Date(b?.createdAt);
+    } else {
+      return sortParams?.[1] === "desc"
+        ? b?.[sortParams[0]] - a?.[sortParams[0]]
+        : a?.[sortParams[0]] - b?.[sortParams[0]];
+    }
   });
 };
 
