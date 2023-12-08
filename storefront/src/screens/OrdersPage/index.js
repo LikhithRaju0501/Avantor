@@ -10,9 +10,11 @@ const OrdersPage = () => {
 
   const currentPage = Number(searchParams?.get("currentPage")) || 0;
   const sort = searchParams?.get("sort") || "createdAt-desc";
+  const orderedDate = searchParams?.get("orderedDate") || "";
   const { data: ordersData, isLoading: isOrdersLoading } = useGetOrders(
     currentPage,
-    sort
+    sort,
+    orderedDate
   );
 
   let paginationModel = {
@@ -22,8 +24,10 @@ const OrdersPage = () => {
     totalPages: 0,
   };
 
-  const defaultSelectedId =
+  const defaultSortId =
     ordersData?.data?.sorts?.find((option) => option?.selected)?.id || "";
+  const defaultDateId =
+    ordersData?.data?.dateRange?.find((option) => option?.selected)?.id || "";
 
   if (!isOrdersLoading) {
     paginationModel = { currentPage, ...ordersData?.data?.pagination };
@@ -40,6 +44,24 @@ const OrdersPage = () => {
       setSearchParams(params?.toString());
     }
   };
+
+  const onDateRangeChange = (event) => {
+    const dateId = event?.target?.value;
+    const params = new URLSearchParams(searchParams);
+    if (dateId === "all") {
+      searchParams?.delete("orderedDate");
+      setSearchParams(searchParams);
+    } else {
+      params?.set("orderedDate", dateId);
+      setSearchParams(params?.toString());
+    }
+  };
+
+  const onActiveFilterClicked = (filter) => {
+    searchParams?.delete(filter);
+    setSearchParams(searchParams);
+  };
+
   return isOrdersLoading ? (
     <CxSpinner />
   ) : (
@@ -51,13 +73,65 @@ const OrdersPage = () => {
               padding: "10px",
             }}
           >
-            <h3>Sort by latest:</h3>
+            <h3>Filter/Sort by :</h3>
+            <h5 className="mt-3">Active Filters:</h5>
+            <div className="mb-3">
+              <div className="p-2">
+                {ordersData?.data?.breadcrumbs?.map(
+                  ({ id, type, title, isDefault }) => {
+                    return isDefault ? (
+                      <div
+                        key={id}
+                        style={{ backgroundColor: "#f1f2f6" }}
+                        className="mb-2 p-2"
+                      >
+                        <a
+                          className="cx-link"
+                          style={{ textDecoration: "none" }}
+                        >
+                          {title}
+                        </a>
+                      </div>
+                    ) : (
+                      <div
+                        key={id}
+                        style={{ backgroundColor: "#f1f2f6" }}
+                        className="mb-2 p-2"
+                      >
+                        <a
+                          className="cx-link"
+                          style={{ textDecoration: "none", cursor: "pointer" }}
+                          onClick={() => onActiveFilterClicked(type)}
+                        >
+                          <div className="d-flex justify-content-between">
+                            <div>{title}</div>
+                            <div>x</div>
+                          </div>
+                        </a>
+                      </div>
+                    );
+                  }
+                )}
+              </div>
+              <hr />
+            </div>
             <Form.Select
-              defaultValue={defaultSelectedId}
+              value={defaultSortId}
               onChange={onSortChange}
               style={{ cursor: "pointer" }}
             >
               {ordersData?.data?.sorts?.map((option) => (
+                <option key={option?.id} value={option?.id}>
+                  {option?.title}
+                </option>
+              ))}
+            </Form.Select>
+            <Form.Select
+              value={defaultDateId}
+              onChange={onDateRangeChange}
+              style={{ cursor: "pointer", margin: "10px 0 10px 0" }}
+            >
+              {ordersData?.data?.dateRange?.map((option) => (
                 <option key={option?.id} value={option?.id}>
                   {option?.title}
                 </option>

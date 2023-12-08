@@ -2,9 +2,9 @@ import { useMutation, useQuery } from "react-query";
 import { constants } from "./apiUrls";
 import { axiosInstance } from "./interceptor";
 
-const fetchOrders = (currentPage, sort) => {
+const fetchOrders = (currentPage, sort, orderedDate) => {
   return axiosInstance.get(
-    `${constants.baseSiteId}orders?currentPage=${currentPage}&sort=${sort}`,
+    `${constants.baseSiteId}orders?currentPage=${currentPage}&sort=${sort}&orderedDate=${orderedDate}`,
     {
       headers: {
         Authorization: localStorage.getItem("token"),
@@ -13,10 +13,14 @@ const fetchOrders = (currentPage, sort) => {
   );
 };
 
-export const useGetOrders = (currentPage = 0, sort = "createdAt-desc") => {
+export const useGetOrders = (
+  currentPage = 0,
+  sort = "createdAt-desc",
+  orderedDate = ""
+) => {
   return useQuery(
-    ["orders", currentPage, sort],
-    () => fetchOrders(currentPage, sort),
+    ["orders", currentPage, sort, orderedDate],
+    () => fetchOrders(currentPage, sort, orderedDate),
     {
       refetchOnMount: true,
       refetchOnWindowFocus: false,
