@@ -179,7 +179,6 @@ const normalizeOrders = (orders, sort = "createdAt-desc") => {
         ? b?.totalPrice?.value - a?.totalPrice?.value
         : a?.totalPrice?.value - b?.totalPrice?.value;
     } else if (sortParams?.[0] === "createdAt") {
-      console.log(sortParams?.[1] === "desc");
       return sortParams?.[1] === "desc"
         ? new Date(b?.createdAt) - new Date(a?.createdAt)
         : new Date(a?.createdAt) - new Date(b?.createdAt);
