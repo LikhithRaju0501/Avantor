@@ -13,7 +13,7 @@ const fetchOrders = (currentPage, sort) => {
   );
 };
 
-export const useGetOrders = (currentPage = 0, sort = "createdAt") => {
+export const useGetOrders = (currentPage = 0, sort = "createdAt-desc") => {
   return useQuery(
     ["orders", currentPage, sort],
     () => fetchOrders(currentPage, sort),
