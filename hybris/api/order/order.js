@@ -38,8 +38,7 @@ router.get("/", authenticateToken, async (req, res) => {
         ...userOrders?.toObject(),
         orders: [...paginatedOrders?.entries],
         pagination: { ...paginatedOrders?.pagination },
-        sorts: [...generateSorts(sort)],
-        dateRange: [...generateDateFacets(orderedDate)],
+        facets: [...generateFacets(sort, orderedDate)],
         breadcrumbs: [...generateBreadcrumbs(sort, orderedDate)],
         type: "OrderWSDTO",
       });
@@ -48,8 +47,7 @@ router.get("/", authenticateToken, async (req, res) => {
         userId: user?._id,
         userName: user?.username,
         orders: [],
-        sorts: [...generateSorts(sort)],
-        dateRange: [...generateDateFacets(orderedDate)],
+        facets: [...generateFacets(sort, orderedDate)],
         breadcrumbs: [...generateBreadcrumbs(sort, orderedDate)],
         pagination: {
           currentPage: 0,
@@ -145,6 +143,13 @@ router.post("/", authenticateToken, async (req, res) => {
     });
   }
 });
+
+const generateFacets = (sort, orderedDate) => {
+  return [
+    { type: "sorts", values: [...generateSorts(sort)] },
+    { type: "dateRange", values: [...generateDateFacets(orderedDate)] },
+  ];
+};
 
 const generateBreadcrumbs = (sort, orderedDate) => {
   const dateRangeOptions = ["today", "last7days", "last30days"];
