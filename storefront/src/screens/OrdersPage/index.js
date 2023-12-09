@@ -24,41 +24,41 @@ const OrdersPage = () => {
     totalPages: 0,
   };
 
-  const defaultSortId =
-    ordersData?.data?.sorts?.find((option) => option?.selected)?.id || "";
-  const defaultDateId =
-    ordersData?.data?.dateRange?.find((option) => option?.selected)?.id || "";
+  const defaultFacetId = (type) =>
+    ordersData?.data?.facets
+      ?.find((facet) => facet?.type === type)
+      ?.values?.find((option) => option?.selected)?.id || "";
 
   if (!isOrdersLoading) {
     paginationModel = { currentPage, ...ordersData?.data?.pagination };
   }
 
-  const onSortChange = (event) => {
-    const sortId = event?.target?.value;
+  const onFacetChange = (event, type) => {
+    const facetId = event?.target?.value;
     const params = new URLSearchParams(searchParams);
-    if (sortId === "createdAt-desc") {
-      searchParams?.delete("sort");
-      setSearchParams(searchParams);
-    } else {
-      params?.set("sort", sortId);
-      setSearchParams(params?.toString());
-    }
-  };
-
-  const onDateRangeChange = (event) => {
-    const dateId = event?.target?.value;
-    const params = new URLSearchParams(searchParams);
-    if (dateId === "all") {
-      searchParams?.delete("orderedDate");
-      setSearchParams(searchParams);
-    } else {
-      params?.set("orderedDate", dateId);
-      setSearchParams(params?.toString());
+    params?.delete("currentPage");
+    if (type === "sorts") {
+      if (facetId === "createdAt-desc") {
+        searchParams?.delete("sort");
+        setSearchParams(searchParams);
+      } else {
+        params?.set("sort", facetId);
+        setSearchParams(params?.toString());
+      }
+    } else if (type === "dateRange") {
+      if (facetId === "all") {
+        searchParams?.delete("orderedDate");
+        setSearchParams(searchParams);
+      } else {
+        params?.set("orderedDate", facetId);
+        setSearchParams(params?.toString());
+      }
     }
   };
 
   const onActiveFilterClicked = (filter) => {
     searchParams?.delete(filter);
+    searchParams?.delete("currentPage");
     setSearchParams(searchParams);
   };
 
@@ -115,28 +115,23 @@ const OrdersPage = () => {
               </div>
               <hr />
             </div>
-            <Form.Select
-              value={defaultSortId}
-              onChange={onSortChange}
-              style={{ cursor: "pointer" }}
-            >
-              {ordersData?.data?.sorts?.map((option) => (
-                <option key={option?.id} value={option?.id}>
-                  {option?.title}
-                </option>
-              ))}
-            </Form.Select>
-            <Form.Select
-              value={defaultDateId}
-              onChange={onDateRangeChange}
-              style={{ cursor: "pointer", margin: "10px 0 10px 0" }}
-            >
-              {ordersData?.data?.dateRange?.map((option) => (
-                <option key={option?.id} value={option?.id}>
-                  {option?.title}
-                </option>
-              ))}
-            </Form.Select>
+            {ordersData?.data?.facets?.map(({ type, values }) => {
+              return (
+                <Form.Select
+                  key={type}
+                  value={defaultFacetId(type)}
+                  onChange={() => onFacetChange(event, type)}
+                  style={{ cursor: "pointer" }}
+                  className="mt-3 mb-3"
+                >
+                  {values?.map((option) => (
+                    <option key={option?.id} value={option?.id}>
+                      {option?.title}
+                    </option>
+                  ))}
+                </Form.Select>
+              );
+            })}
           </div>
         </div>
         <div style={{ flexBasis: "75%" }}>
@@ -156,23 +151,27 @@ const OrdersPage = () => {
                 for orders that you placed recently (if any).
               </span>
             </div>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Order#</th>
-                  <th> Date Placed</th>
-                  <th>Number of Items</th>
-                  <th>Order Status</th>
-                  <th>Price</th>
-                  <th>Items</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ordersData?.data?.orders?.map((order) => {
-                  return <OrderItems key={order?._id} order={order} />;
-                })}
-              </tbody>
-            </Table>
+            {ordersData?.data?.orders?.length ? (
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>Order#</th>
+                    <th> Date Placed</th>
+                    <th>Number of Items</th>
+                    <th>Order Status</th>
+                    <th>Price</th>
+                    <th>Items</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ordersData?.data?.orders?.map((order) => {
+                    return <OrderItems key={order?._id} order={order} />;
+                  })}
+                </tbody>
+              </Table>
+            ) : (
+              <div className="p-2">No Orders Found.</div>
+            )}
           </div>
         </div>
       </div>
