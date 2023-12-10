@@ -1,0 +1,27 @@
+.suggestion-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  z-index: 1000;
+  background-color: white;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 5px;
+  width: 100%;
+}
+
+.suggestion-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.suggestion-dropdown li {
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+.suggestion-dropdown li:hover {
+  background-color: #f8f9fa;
+}

@@ -123,5 +123,42 @@ router.get("/:searchTerm", async (req, res) => {
     }
   }
 });
+router.post("/suggestions", async (req, res) => {
+  try {
+    const searchTerm = req?.body?.searchTerm;
+    const escapedUserInput = escapeRegExp(searchTerm);
+    const regex = new RegExp(escapedUserInput, "i");
+    if (searchTerm) {
+      let suggestionList = [];
+      const product = await searchModel
+        .find({
+          product: { $regex: regex },
+        })
+        .limit(11);
+      if (product?.length) {
+        suggestionList?.push({
+          category: "products",
+          suggestions: [...product],
+        });
+      }
+      const supplier = await supplierModel
+        .find({
+          supplierName: { $regex: regex },
+        })
+        .limit(11);
+      if (supplier?.length) {
+        suggestionList?.push({
+          category: "supplier",
+          suggestions: [...supplier],
+        });
+      }
+      res.status(200).json(suggestionList);
+    } else {
+      res.status(200).json([]);
+    }
+  } catch (error) {
+    res.status(400).json({ message: error?.message });
+  }
+});
 
 module.exports = router;

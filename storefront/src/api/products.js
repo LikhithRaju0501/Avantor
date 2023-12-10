@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { constants } from "./apiUrls";
 
 const fetchProducts = (searchTerm, currentPage) => {
@@ -17,6 +17,34 @@ export const useGetProducts = (searchTerm, currentPage) => {
       refetchOnWindowFocus: false,
     }
   );
+};
+
+const fetchProductSuggestions = (searchTerm) => {
+  return axios.post(`${constants.baseSiteId}search/suggestions`, {
+    searchTerm,
+  });
+};
+const debounce = (func, delay) => {
+  let timerId;
+  return (...args) => {
+    clearTimeout(timerId);
+    timerId = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+};
+
+export const useGetProductSuggestions = () => {
+  const mutation = useMutation((searchTerm) =>
+    fetchProductSuggestions(searchTerm)
+  );
+
+  const delayedMutate = debounce(mutation.mutate, 1500);
+
+  return {
+    ...mutation,
+    delayedMutate,
+  };
 };
 
 const fetchProductDetails = (productId) => {
