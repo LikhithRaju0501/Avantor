@@ -1,6 +1,5 @@
 import React from "react";
 import { useDeleteCartDetail, useGetCartDetails } from "../../api/cart";
-import { useGetNavigateToCheckoutStep } from "../../api/checkout";
 import CartItem from "./CartItem";
 import { CartSummary, CxSpinner } from "../../components";
 import { useGlobalMessage } from "../../components/GlobalMessageService/GlobalMessageService";

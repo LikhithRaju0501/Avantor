@@ -6,15 +6,40 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { isLoggedIn, logout } from "../../api/register";
+import { useGetProductSuggestions } from "../../api/products";
+import "./index.css";
 
 const AvtrNavbar = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset, watch } = useForm();
   const loggedIn = isLoggedIn();
 
   let navigate = useNavigate();
   const onSubmit = (data) => navigate(`/search/${data?.search}`);
+
+  const {
+    delayedMutate,
+    mutate,
+    data: suggestionList,
+  } = useGetProductSuggestions();
+
+  const handleInputChange = (event) => {
+    const inputValue = event?.target?.value;
+    delayedMutate(inputValue);
+  };
+
+  const clearInput = () => {
+    reset();
+    mutate("");
+  };
+
+  const onMoreClick = () => {
+    const searchTerm = watch("search");
+    navigate(`/search/${searchTerm}`);
+    reset();
+    mutate("");
+  };
 
   return (
     <Navbar expand="lg">
@@ -54,17 +79,65 @@ const AvtrNavbar = () => {
               </>
             )}
           </Nav>
-          <Form className="d-flex" onSubmit={handleSubmit(onSubmit)}>
+          <Form
+            className="position-relative d-flex"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <Form.Control
               type="search"
               placeholder="Search"
               className="me-2"
               aria-label="Search"
               {...register("search", { required: true })}
+              onChange={handleInputChange}
             />
             <Button variant="outline-success" type="submit">
               Search
             </Button>
+            {suggestionList?.data?.length > 0 && (
+              <div className="position-absolute start-0 mt-1 p-2 bg-light w-100 suggestion-dropdown">
+                <ul className="list-unstyled mb-0">
+                  {suggestionList?.data?.map((suggestionCat) => (
+                    <div key={suggestionCat?.category}>
+                      <h5>
+                        {suggestionCat?.category?.charAt(0).toUpperCase() +
+                          suggestionCat?.category.slice(1)}
+                      </h5>
+                      {suggestionCat?.suggestions
+                        ?.slice(0, 10)
+                        ?.map((suggestion) => {
+                          return suggestionCat?.category === "products" ? (
+                            <Link
+                              key={suggestion?._id}
+                              style={{ textDecoration: "none" }}
+                              onClick={clearInput}
+                              to={`/search/${suggestion?.product}`}
+                            >
+                              <li>{suggestion?.product}</li>
+                            </Link>
+                          ) : suggestionCat?.category === "supplier" ? (
+                            <Link
+                              key={suggestion?._id}
+                              style={{ textDecoration: "none" }}
+                              onClick={clearInput}
+                              to={`/search/${suggestion?.supplierName}`}
+                            >
+                              <li>{suggestion?.supplierName}</li>
+                            </Link>
+                          ) : null;
+                        })}
+                      {suggestionCat?.suggestions?.length > 10 && (
+                        <div onClick={onMoreClick}>
+                          <Link style={{ textDecoration: "none" }}>
+                            <p>...More</p>
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </ul>
+              </div>
+            )}
           </Form>
         </Navbar.Collapse>
       </Container>
