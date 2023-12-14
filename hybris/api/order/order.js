@@ -2,11 +2,13 @@ var express = require("express");
 const authenticateToken = require("../middleware/middleware");
 const cartModel = require("../cart/cartModel");
 const orderModel = require("./orderModel");
+const invoiceModel = require("./invoiceModel");
 const UserModel = require("../user/UserModel");
 var router = express.Router();
 const moment = require("moment-timezone");
 const nodemailer = require("nodemailer");
 const { getPaginatedData } = require("../search/resuableMethods");
+const puppeteer = require("puppeteer");
 
 router.get("/", authenticateToken, async (req, res) => {
   try {
@@ -100,6 +102,15 @@ router.post("/", authenticateToken, async (req, res) => {
           },
           { new: true }
         );
+        const orderId = result?.orders[result?.orders?.length - 1]?._id;
+        await createInvoice(
+          orderId,
+          entries,
+          totalPrice,
+          address,
+          req?.userId,
+          user?.username
+        );
         const deleteCart = await cartModel.deleteOne({ _id: userCart?._id });
         sendMails(
           user?.username,
@@ -120,6 +131,15 @@ router.post("/", authenticateToken, async (req, res) => {
         });
 
         result = await currentOrder.save();
+        const orderId = result?._id;
+        await createInvoice(
+          orderId,
+          entries,
+          totalPrice,
+          address,
+          req?.userId,
+          user?.username
+        );
         const deleteCart = await cartModel.deleteOne({ _id: userCart?._id });
         sendMails(
           user?.username,
@@ -143,6 +163,152 @@ router.post("/", authenticateToken, async (req, res) => {
     });
   }
 });
+
+const createInvoice = async (
+  orderId,
+  entries,
+  totalPrice,
+  address,
+  userId,
+  userName
+) => {
+  try {
+    const userInvoices = await invoiceModel.findOne({
+      userId,
+    });
+
+    const invoiceHtml = `
+  <html>
+<head>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+  }
+  .container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  .shipping-address{
+    margin: 10px;
+    padding: 10px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+  .total-price{
+    text-align: right;
+  }
+  .text-break{
+    word-wrap: text-break;
+  }
+  .contact-us{
+    color: red;
+    font-size: 10px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+<h3>Ammijan</h3>
+<div class="shipping-address">
+<h5>Shipping Address:</h5>
+<div className="text-break">
+    ${address?.line1}
+  </div>
+  <div className="text-break">
+    ${address?.line2}
+  </div>
+  <div className="text-break">
+    ${address?.cityProvince},
+    ${address?.state}
+  </div>
+  <div className="text-break">
+    ${address?.pinCode}
+  </div>
+</div>
+<p>This is your list of orders:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${generateTableRows(entries)}
+    </tbody>
+  </table>
+  <p class="total-price">Total Price: ${totalPrice?.formattedValue} </p>
+  <p class="total-price">Payment Date: ${moment()
+    .tz("Asia/Kolkata")
+    .format("YYYY-MM-DD HH:mm:ss")} </p>
+  <p class="contact-us text-break">*Please visit contact us section of our site for more queries.</p>
+</div>
+</body>
+</html>
+  `;
+    const pdfBase64 = await convertHTMLToPDF(invoiceHtml);
+    const invoice = {
+      name: `${orderId}.pdf`,
+      invoicePDF: pdfBase64,
+      paymentDate: moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss"),
+    };
+    if (userInvoices) {
+      const result = await invoiceModel.findOneAndUpdate(
+        { _id: userInvoices?._id },
+        {
+          $push: {
+            invoices: { $each: [{ ...invoice }], $position: 0 },
+          },
+        },
+        { new: true }
+      );
+      return result;
+    } else {
+      const currentInvoice = new invoiceModel({
+        userId,
+        userName,
+        invoices: [{ ...invoice }],
+      });
+      const result = currentInvoice?.save();
+      return result;
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      error,
+    });
+  }
+};
+
+const convertHTMLToPDF = async (html) => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  await page.setContent(html);
+  const pdfBuffer = await page.pdf({ format: "A4" });
+
+  await browser.close();
+
+  const pdfBase64 = pdfBuffer.toString("base64");
+  return pdfBase64;
+};
 
 const generateFacets = (sort, orderedDate) => {
   return [

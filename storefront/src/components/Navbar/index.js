@@ -16,7 +16,11 @@ const AvtrNavbar = () => {
   const loggedIn = isLoggedIn();
 
   let navigate = useNavigate();
-  const onSubmit = (data) => navigate(`/search/${data?.search}`);
+  const onSubmit = (data) => {
+    navigate(`/search/${data?.search}`);
+    reset();
+    mutate("");
+  };
 
   const {
     delayedMutate,
