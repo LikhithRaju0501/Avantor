@@ -34,7 +34,14 @@ export const GlobalMessage = () => {
   return (
     <div
       style={{
-        backgroundColor: message?.type === "error" ? "#ff7979" : "#20bf6b",
+        backgroundColor:
+          message?.type === "error"
+            ? "#ff7979"
+            : message?.type === "success"
+            ? "#20bf6b"
+            : message?.type === "info"
+            ? "#4bcffa"
+            : "",
       }}
       className="text-center p-4 text-break"
     >

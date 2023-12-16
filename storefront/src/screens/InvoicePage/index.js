@@ -1,32 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { useGetInvoiceById, useGetInvoices } from "../../api/invoice";
-import { Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import InvoiceItems from "./InvoiceItems";
 import { CxSpinner } from "../../components";
+import { downloadFilesAsZip, openPDFInNewTab } from "./InvoiceService";
+import { useGlobalMessage } from "../../components/GlobalMessageService/GlobalMessageService";
 
 const InvoicePage = () => {
+  const [invoicesToDownload, setInvoicesToDownload] = useState(new Set());
+  const { addMessage } = useGlobalMessage();
   const { data: invoicesData, isLoading: isInvoicesLoading } =
     useGetInvoices(0);
 
   const openInvoiceInNewtab = (data) => {
-    openPDFInNewTab(data?.data?.invoicePDF);
-  };
-
-  const openPDFInNewTab = (base64PDF) => {
-    const byteCharacters = atob(base64PDF);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    if (data?.data?.isSingleInvoice) {
+      openPDFInNewTab(data?.data?.invoicePDF);
+    } else {
+      addMessage("Please hold on a sec until we get you your ZIP file", "info");
+      downloadFilesAsZip(data?.data?.invoices);
     }
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: "application/pdf" });
-
-    const pdfUrl = window.URL.createObjectURL(blob);
-
-    window.open(pdfUrl, "_blank");
   };
 
-  const { isLoading: isAddToCartLoading, mutate: fetchInvoicePdf } =
+  const { isLoading: isGettingInvoiceLoading, mutate: fetchInvoicePdf } =
     useGetInvoiceById(openInvoiceInNewtab);
 
   const viewInvoice = (invoiceId) => {
@@ -36,7 +31,30 @@ const InvoicePage = () => {
     });
   };
 
-  return isInvoicesLoading || isAddToCartLoading ? (
+  const downloadInvoices = () => {
+    if (!Array.from(invoicesToDownload)?.length) {
+      addMessage("Please Select Invoices to Download", "error");
+      return;
+    }
+    fetchInvoicePdf({
+      isSingleInvoice: false,
+      invoiceNumbers: Array.from(invoicesToDownload),
+    });
+  };
+
+  const addItemToInvoiceDownload = ({ invoiceId, isToBeAdded }) => {
+    if (isToBeAdded) {
+      let updatedSet = new Set(invoicesToDownload);
+      updatedSet.add(invoiceId);
+      setInvoicesToDownload(updatedSet);
+    } else {
+      let updatedSet = new Set(invoicesToDownload);
+      updatedSet.delete(invoiceId);
+      setInvoicesToDownload(updatedSet);
+    }
+  };
+
+  return isInvoicesLoading || isGettingInvoiceLoading ? (
     <CxSpinner />
   ) : (
     <div className="container">
@@ -45,6 +63,11 @@ const InvoicePage = () => {
           Date Range Facets
         </div>
         <div style={{ flexBasis: "75%" }} className="p-4">
+          <div className="d-flex justify-content-end">
+            <Button className="mb-3" onClick={downloadInvoices}>
+              Download Invoices ZIP
+            </Button>
+          </div>
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -59,12 +82,16 @@ const InvoicePage = () => {
                   <InvoiceItems
                     key={invoice?._id}
                     viewInvoice={viewInvoice}
+                    addItemToInvoiceDownload={addItemToInvoiceDownload}
                     {...invoice}
                   />
                 );
               })}
             </tbody>
           </Table>
+          <div className="d-flex justify-content-end">
+            <Button onClick={downloadInvoices}>Download Invoices ZIP</Button>
+          </div>
         </div>
       </div>
     </div>
