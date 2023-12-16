@@ -3,6 +3,7 @@ import {
   CartPage,
   CheckoutPage,
   Homepage,
+  InvoicePage,
   LoginPage,
   OrdersPage,
   PageNotFound,
@@ -57,6 +58,12 @@ class App extends Component {
                 exact
                 path="/orders"
                 element={isLoggedIn() ? <OrdersPage /> : <LoginPage />}
+              />
+
+              <Route
+                exact
+                path="/invoices"
+                element={isLoggedIn() ? <InvoicePage /> : <LoginPage />}
               />
               <Route path="*" element={<PageNotFound />} />
             </Routes>

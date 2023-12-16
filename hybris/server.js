@@ -11,6 +11,7 @@ const cartRoute = require("./api/cart/cart");
 const shippingOptionsRoute = require("./api/shippingOptions/shippingOptions");
 const checkoutRoute = require("./api/checkout/checkout");
 const orderRoute = require("./api/order/order");
+const invoiceRoute = require("./api/order/invoice");
 
 const port = 5000;
 const mongoString =
@@ -41,6 +42,7 @@ app.use("/cart", cartRoute);
 app.use("/shipping-options", shippingOptionsRoute);
 app.use("/checkout", checkoutRoute);
 app.use("/orders", orderRoute);
+app.use("/invoice", invoiceRoute);
 
 // Define a route for the home page
 
