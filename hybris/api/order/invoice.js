@@ -47,13 +47,21 @@ router.post("/get-invoice", authenticateToken, async (req, res) => {
       if (userInvoice?.invoices?.length > 0) {
         const { invoicePDF } = userInvoice.invoices[0];
         return res.status(200).json({
+          isSingleInvoice,
           invoicePDF,
         });
       }
     } else {
-      return res.status(404).json({
-        error: "Kaam Chal raha hai",
-      });
+      const invoiceIds = req?.body?.invoiceNumbers;
+      const { invoices } = await invoiceModel
+        .findOne({ userId: req?.userId })
+        .lean();
+
+      const filteredInvoices = filterInvoices([...invoices], [...invoiceIds]);
+
+      return res
+        .status(200)
+        .json({ isSingleInvoice, invoices: [...filteredInvoices] });
     }
 
     return res.status(404).json({
@@ -65,5 +73,25 @@ router.post("/get-invoice", authenticateToken, async (req, res) => {
     });
   }
 });
+
+const filterInvoices = (invoices, invoiceIds) => {
+  try {
+    let base64PDFs = [];
+    invoices?.filter((invoice) => {
+      if (invoiceIds?.includes(String(invoice?._id))) {
+        base64PDFs = [
+          ...base64PDFs,
+          {
+            name: invoice?.name,
+            invoicePDF: invoice?.invoicePDF,
+          },
+        ];
+      }
+    });
+    return base64PDFs;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 module.exports = router;

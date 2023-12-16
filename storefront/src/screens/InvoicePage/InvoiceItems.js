@@ -1,10 +1,22 @@
 import React from "react";
 
-const InvoiceItems = ({ _id, name, paymentDate, viewInvoice }) => {
+const InvoiceItems = ({
+  _id,
+  name,
+  paymentDate,
+  viewInvoice,
+  addItemToInvoiceDownload,
+}) => {
+  const handleAddInvoiceToDownload = (event) => {
+    addItemToInvoiceDownload({
+      invoiceId: _id,
+      isToBeAdded: event?.target?.checked,
+    });
+  };
   return (
     <tr>
       <td>
-        <input type="checkbox" />
+        <input type="checkbox" onChange={handleAddInvoiceToDownload} />
       </td>
       <td>
         <a
