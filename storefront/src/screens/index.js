@@ -7,4 +7,5 @@ export { default as CartPage } from "./CartPage";
 export { default as ShippingOptions } from "./ShippingOptions";
 export { default as CheckoutPage } from "./CheckoutPage";
 export { default as OrdersPage } from "./OrdersPage";
+export { default as InvoicePage } from "./InvoicePage";
 export { default as PageNotFound } from "./PageNotFound";
