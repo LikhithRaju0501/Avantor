@@ -18,6 +18,7 @@ import { QueryClientProvider, QueryClient } from "react-query";
 import { GlobalMessageProvider } from "./components/GlobalMessageService/GlobalMessageService";
 import { isLoggedIn } from "./api/register";
 import CheckoutStepsGuard from "./screens/CheckoutPage/CheckoutStepsGuard";
+import "./App.css";
 
 const queryClient = new QueryClient();
 

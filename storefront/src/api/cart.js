@@ -56,3 +56,18 @@ export const useDeleteCartDetail = (onDeleteSuccess, onDeleteError) => {
     onError: onDeleteError,
   });
 };
+
+const fetchOffers = () => {
+  return axiosInstance.get(`${constants.baseSiteId}my-offers`, {
+    headers: {
+      Authorization: localStorage.getItem("token"),
+    },
+  });
+};
+
+export const useGetOffers = () => {
+  return useQuery(["offers"], () => fetchOffers(), {
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+  });
+};

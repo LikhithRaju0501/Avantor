@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import "./index.css";
-import { Button } from "react-bootstrap";
+import OffersModal from "./OffersModal";
 
-const CartSummary = ({ cart, children }) => {
+const CartSummary = ({ cart, children, isCart = false }) => {
+  const [offersModal, setOffersModal] = useState(false);
+
   const { totalPrice } = cart;
   return (
     <div className="cart-summary">
@@ -14,6 +16,16 @@ const CartSummary = ({ cart, children }) => {
         </span>
       </div>
       {children}
+      {isCart && (
+        <div className="text-center my-2">
+          <a className="cx-link" onClick={() => setOffersModal(true)}>
+            Offers & Promo Codes
+          </a>
+        </div>
+      )}
+      {offersModal && (
+        <OffersModal show={offersModal} onHide={() => setOffersModal(false)} />
+      )}
     </div>
   );
 };

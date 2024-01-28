@@ -9,6 +9,7 @@ const moment = require("moment-timezone");
 const nodemailer = require("nodemailer");
 const { getPaginatedData } = require("../search/resuableMethods");
 const puppeteer = require("puppeteer");
+const { offersHandler } = require("../offers/offer");
 
 router.get("/", authenticateToken, async (req, res) => {
   try {
@@ -120,7 +121,7 @@ router.post("/", authenticateToken, async (req, res) => {
           secondaryEmailAddress
         );
 
-        return res.status(201).json({
+        res.status(201).json({
           message: "Orders exists, Added order",
         });
       } else {
@@ -148,9 +149,16 @@ router.post("/", authenticateToken, async (req, res) => {
           primaryEmailAddress,
           secondaryEmailAddress
         );
-        return res.status(201).json({
+
+        res.status(201).json({
           message: "Created New Order",
         });
+
+        try {
+          await offersHandler({ ...req, userId: req?.userId }, res, false);
+        } catch (error) {
+          console.log(error);
+        }
       }
     } else {
       return res.status(404).json({
