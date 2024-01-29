@@ -12,10 +12,11 @@ const shippingOptionsRoute = require("./api/shippingOptions/shippingOptions");
 const checkoutRoute = require("./api/checkout/checkout");
 const orderRoute = require("./api/order/order");
 const invoiceRoute = require("./api/order/invoice");
+const { router: offersRoute } = require("./api/offers/offer");
 
 const port = 5000;
 const mongoString =
-  "mongodb+srv://likhithgraju:qUY0MaYYHrPk2E0n@cluster0.dudrojd.mongodb.net/avantor";
+  "mongodb+srv://likhithgraju:kXmfm6axm2AqFkCT@cluster0.dudrojd.mongodb.net/avantor";
 const bodyParser = require("body-parser");
 
 app.use(cors());
@@ -43,8 +44,7 @@ app.use("/shipping-options", shippingOptionsRoute);
 app.use("/checkout", checkoutRoute);
 app.use("/orders", orderRoute);
 app.use("/invoice", invoiceRoute);
-
-// Define a route for the home page
+app.use("/my-offers", offersRoute);
 
 // Start the server
 app.listen(port, () => {

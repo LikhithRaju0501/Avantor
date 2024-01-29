@@ -205,7 +205,7 @@ const RegisterPage = () => {
             <div className="mb-1">
               <Form.Check
                 type="checkbox"
-                label="I agree to Avantor’s Terms and Conditions"
+                label="I agree to Ammijan's Terms and Conditions"
                 {...registerAddress(
                   "termsAndConditions",
                   validations?.termsAndConditions

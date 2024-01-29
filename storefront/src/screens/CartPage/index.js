@@ -62,7 +62,7 @@ const CartPage = () => {
                   />
                 ))}
               </div>
-              <CartSummary cart={data?.data}>
+              <CartSummary cart={data?.data} isCart={true}>
                 <Button className="w-100 mt-2" onClick={navigateToCheckout}>
                   Proceed to Checkout
                 </Button>

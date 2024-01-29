@@ -58,6 +58,20 @@ const dataSchema = new mongoose.Schema({
       required: true,
     },
   },
+  subTotalPrice: {
+    currency: {
+      type: String,
+      required: true,
+    },
+    value: {
+      type: Number,
+      required: true,
+    },
+    formattedValue: {
+      type: String,
+      required: true,
+    },
+  },
   address: {
     _id: {
       required: false,
@@ -98,6 +112,56 @@ const dataSchema = new mongoose.Schema({
   },
   secondaryEmailAddress: {
     type: [String],
+  },
+  offer: {
+    _id: {
+      required: false,
+      type: mongoose.Schema.Types.ObjectId,
+    },
+    name: {
+      type: String,
+      required: false,
+    },
+    type: {
+      type: Number,
+      required: false,
+    },
+    costReduction: {
+      currency: {
+        type: String,
+        required: false,
+      },
+      value: {
+        type: Number,
+        required: false,
+      },
+      formattedValue: {
+        type: String,
+        required: false,
+      },
+    },
+    minimumCost: {
+      currency: {
+        type: String,
+        required: false,
+      },
+      value: {
+        type: Number,
+        required: false,
+      },
+      formattedValue: {
+        type: String,
+        required: false,
+      },
+    },
+    discountDisplay: {
+      type: String,
+      required: false,
+    },
+    discountTAndC: {
+      type: String,
+      required: false,
+    },
   },
 });
 

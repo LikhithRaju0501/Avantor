@@ -4,11 +4,13 @@ const cartModel = require("../cart/cartModel");
 const orderModel = require("./orderModel");
 const invoiceModel = require("./invoiceModel");
 const UserModel = require("../user/UserModel");
+const offerModel = require("../offers/offerModel");
 var router = express.Router();
 const moment = require("moment-timezone");
 const nodemailer = require("nodemailer");
 const { getPaginatedData } = require("../search/resuableMethods");
 const puppeteer = require("puppeteer");
+const { offersHandler } = require("../offers/offer");
 
 router.get("/", authenticateToken, async (req, res) => {
   try {
@@ -79,13 +81,16 @@ router.post("/", authenticateToken, async (req, res) => {
       const {
         entries,
         totalPrice,
+        subTotalPrice,
         address,
         primaryEmailAddress,
         secondaryEmailAddress,
+        offer,
       } = userCart?.toObject();
       const order = {
         entries: [...entries] || [],
         totalPrice: { ...totalPrice } || {},
+        subTotalPrice: { ...subTotalPrice } || {},
         address: { ...address } || {},
         emailAddresses: [primaryEmailAddress, ...secondaryEmailAddress] || [],
         numberOfItems: entries?.length || 0,
@@ -107,20 +112,23 @@ router.post("/", authenticateToken, async (req, res) => {
           orderId,
           entries,
           totalPrice,
+          subTotalPrice,
           address,
           req?.userId,
           user?.username
         );
+        await deleteOffer(req?.userId, offer);
         const deleteCart = await cartModel.deleteOne({ _id: userCart?._id });
         sendMails(
           user?.username,
           entries,
           totalPrice,
+          subTotalPrice,
           primaryEmailAddress,
           secondaryEmailAddress
         );
 
-        return res.status(201).json({
+        res.status(201).json({
           message: "Orders exists, Added order",
         });
       } else {
@@ -136,21 +144,31 @@ router.post("/", authenticateToken, async (req, res) => {
           orderId,
           entries,
           totalPrice,
+          subTotalPrice,
           address,
           req?.userId,
           user?.username
         );
+        await deleteOffer(req?.userId, offer);
         const deleteCart = await cartModel.deleteOne({ _id: userCart?._id });
         sendMails(
           user?.username,
           entries,
           totalPrice,
+          subTotalPrice,
           primaryEmailAddress,
           secondaryEmailAddress
         );
-        return res.status(201).json({
+
+        res.status(201).json({
           message: "Created New Order",
         });
+
+        try {
+          await offersHandler({ ...req, userId: req?.userId }, res, false);
+        } catch (error) {
+          console.log(error);
+        }
       }
     } else {
       return res.status(404).json({
@@ -168,6 +186,7 @@ const createInvoice = async (
   orderId,
   entries,
   totalPrice,
+  subTotalPrice,
   address,
   userId,
   userName
@@ -254,7 +273,7 @@ const createInvoice = async (
       ${generateTableRows(entries)}
     </tbody>
   </table>
-  <p class="total-price">Total Price: ${totalPrice?.formattedValue} </p>
+  <p class="total-price">Total Price: ${subTotalPrice?.formattedValue} </p>
   <p class="total-price">Payment Date: ${moment()
     .tz("Asia/Kolkata")
     .format("YYYY-MM-DD HH:mm:ss")} </p>
@@ -295,6 +314,19 @@ const createInvoice = async (
       error,
     });
   }
+};
+
+const deleteOffer = async (userId, offer) => {
+  await offerModel.findOneAndUpdate(
+    { userId },
+    {
+      $pull: {
+        offers: { _id: offer?._id },
+      },
+    },
+    { new: true }
+  );
+  return;
 };
 
 const convertHTMLToPDF = async (html) => {
@@ -421,8 +453,8 @@ const normalizeOrders = (orders, sort = "createdAt-desc", orderedDate = "") => {
   return dateFilteredOrders?.sort((a, b) => {
     if (sortParams?.[0] === "totalPrice") {
       return sortParams?.[1] === "desc"
-        ? b?.totalPrice?.value - a?.totalPrice?.value
-        : a?.totalPrice?.value - b?.totalPrice?.value;
+        ? b?.subTotalPrice?.value - a?.subTotalPrice?.value
+        : a?.subTotalPrice?.value - b?.subTotalPrice?.value;
     } else if (sortParams?.[0] === "createdAt") {
       return sortParams?.[1] === "desc"
         ? new Date(b?.createdAt) - new Date(a?.createdAt)
@@ -479,6 +511,7 @@ const sendMails = (
   username,
   entries,
   totalPrice,
+  subTotalPrice,
   primaryEmailAddress,
   secondaryEmailAddress
 ) => {
@@ -546,7 +579,7 @@ const sendMails = (
         ${generateTableRows(entries)}
       </tbody>
     </table>
-    <p class="total-price">Total Price: ${totalPrice?.formattedValue} </p>
+    <p class="total-price">Total Price: ${subTotalPrice?.formattedValue} </p>
   </div>
 </body>
 </html>
