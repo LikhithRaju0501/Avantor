@@ -9,7 +9,7 @@ var router = express.Router();
 router.get("/", authenticateToken, async (req, res) => {
   const user = await UserModel.findById(req?.userId);
   try {
-    const cartDetails = await cartModel.findOne({ userId: req?.userId });
+    const cartDetails = await cartModel.findOne({ userId: req?.userId }).lean();
     return res.status(200).json({
       name: user?.username,
       entries: cartDetails?.entries || [],
@@ -18,9 +18,15 @@ router.get("/", authenticateToken, async (req, res) => {
         value: 0,
         formattedValue: "0Rs",
       },
+      subTotalPrice: cartDetails?.subTotalPrice || {
+        currency: "Rs",
+        value: 0,
+        formattedValue: "0Rs",
+      },
       addresses: cartDetails?.address || {},
       primaryEmailAddress: cartDetails?.primaryEmailAddress || "",
       secondaryEmailAddress: cartDetails?.secondaryEmailAddress || [],
+      offer: cartDetails?.offer || {},
       type: "cartWSDTO",
     });
   } catch (error) {
@@ -39,7 +45,10 @@ router.post("/", authenticateToken, async (req, res) => {
     const getCart = await cartModel.findOne({ userId: req?.userId });
     let result;
     if (getCart) {
-      const { totalPrice: totalPriceToUpdate } = getCart;
+      const {
+        totalPrice: totalPriceToUpdate,
+        subTotalPrice: subTotalPriceToUpdate,
+      } = getCart;
       //Cart Already exists
       const getEntry = getCart?.entries?.find(
         (entry) => String(entry?.productId) === productId
@@ -66,6 +75,13 @@ router.post("/", authenticateToken, async (req, res) => {
                 formattedValue: `${
                   totalPriceToUpdate?.value + price?.value * quantity
                 }${totalPriceToUpdate?.currency}`,
+              },
+              subTotalPrice: {
+                currency: subTotalPriceToUpdate?.currency,
+                value: subTotalPriceToUpdate?.value + price?.value * quantity,
+                formattedValue: `${
+                  subTotalPriceToUpdate?.value + price?.value * quantity
+                }${subTotalPriceToUpdate?.currency}`,
               },
             },
           }
@@ -102,6 +118,13 @@ router.post("/", authenticateToken, async (req, res) => {
                 formattedValue: `${
                   totalPriceToUpdate?.value + price?.value * quantity
                 }${totalPriceToUpdate?.currency}`,
+              },
+              subTotalPrice: {
+                currency: subTotalPriceToUpdate?.currency,
+                value: subTotalPriceToUpdate?.value + price?.value * quantity,
+                formattedValue: `${
+                  subTotalPriceToUpdate?.value + price?.value * quantity
+                }${subTotalPriceToUpdate?.currency}`,
               },
             },
           },
@@ -154,6 +177,11 @@ router.post("/", authenticateToken, async (req, res) => {
           _id: addressId,
         },
         totalPrice: {
+          ...price,
+          value: price?.value * quantity,
+          formattedValue: `${price?.value * quantity}${price?.currency}`,
+        },
+        subTotalPrice: {
           ...price,
           value: price?.value * quantity,
           formattedValue: `${price?.value * quantity}${price?.currency}`,
@@ -214,6 +242,19 @@ router.delete("/", authenticateToken, async (req, res) => {
                       isEntryAvailable?.price?.value
                     }${cartDetails?.totalPrice?.currency}`
                   : cartDetails?.totalPrice?.formattedValue,
+              },
+              subTotalPrice: {
+                ...cartDetails?.subTotalPrice,
+                value: isEntryAvailable
+                  ? cartDetails?.subTotalPrice?.value -
+                    isEntryAvailable?.price?.value
+                  : cartDetails?.subTotalPrice?.value,
+                formattedValue: isEntryAvailable
+                  ? `${
+                      cartDetails?.subTotalPrice?.value -
+                      isEntryAvailable?.price?.value
+                    }${cartDetails?.subTotalPrice?.currency}`
+                  : cartDetails?.subTotalPrice?.formattedValue,
               },
             },
           }

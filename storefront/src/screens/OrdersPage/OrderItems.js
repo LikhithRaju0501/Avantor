@@ -4,7 +4,7 @@ import OrderItemsModal from "./OrderItemsModal";
 
 const OrderItems = ({ order }) => {
   const [showModal, setShowModal] = useState(false);
-  const { _id, createdAt, numberOfItems, orderStatus, totalPrice, entries } =
+  const { _id, createdAt, numberOfItems, orderStatus, subTotalPrice, entries } =
     order;
 
   return (
@@ -13,12 +13,12 @@ const OrderItems = ({ order }) => {
       <td>{new Date(createdAt).toLocaleDateString()}</td>
       <td>{numberOfItems}</td>
       <td>{orderStatus}</td>
-      <td> {totalPrice?.formattedValue}</td>
+      <td> {subTotalPrice?.formattedValue}</td>
       <td>
         <Button onClick={() => setShowModal(true)}>View</Button>
         <OrderItemsModal
           entries={entries}
-          totalPrice={totalPrice}
+          subTotalPrice={subTotalPrice}
           show={showModal}
           onHide={() => setShowModal(false)}
         />

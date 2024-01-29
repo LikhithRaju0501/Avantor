@@ -4,11 +4,11 @@ import { useForm, Controller } from "react-hook-form";
 import { useGetOffers } from "../../api/cart";
 import CxSpinner from "../CxSpinner";
 
-const OffersModal = ({ ...rest }) => {
+const OffersModal = ({ applyOffer, isApplyOfferLoading, ...rest }) => {
   const [radioValue, setRadioValue] = useState("");
   const [textValue, setTextValue] = useState("");
 
-  const { isLoading, data, isError } = useGetOffers();
+  const { isLoading, data } = useGetOffers();
 
   const { control, register, setValue } = useForm({
     mode: "onChange",
@@ -27,7 +27,7 @@ const OffersModal = ({ ...rest }) => {
   };
 
   const onSubmit = () => {
-    console.log(radioValue, textValue);
+    applyOffer(radioValue);
   };
 
   const capitalizeString = (string) => {
@@ -52,59 +52,63 @@ const OffersModal = ({ ...rest }) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {!isLoading ? (
+        {!isLoading && !isApplyOfferLoading ? (
           <form className="px-3">
             <div className="mb-3">
               <label className="fw-bold my-3">
                 Choose an Available Option:
               </label>
               <div>
-                <Controller
-                  name="radioOption"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <>
-                      {data?.data?.map(
-                        ({
-                          _id,
-                          isDisabled,
-                          name,
-                          discountDisplay,
-                          discountTAndC,
-                        }) => {
-                          return (
-                            <div
-                              key={_id}
-                              className={`row offer-container p-2 mb-2 ${
-                                isDisabled && "disabled-radio-btn"
-                              }`}
-                            >
-                              <div className="col-1 align-self-center">
-                                <Form.Check
-                                  {...field}
-                                  type="radio"
-                                  value={_id}
-                                  id={_id}
-                                  onChange={(e) => radioChangeHandler(e)}
-                                  checked={radioValue === _id}
-                                  disabled={isDisabled}
-                                />
-                              </div>
-                              <div className="col-11">
-                                <span className="fw-bold">{name}</span>
-                                <div className="small">
-                                  {capitalizeString(discountDisplay)} -
-                                  {capitalizeString(discountTAndC)}
+                {data?.data?.length ? (
+                  <Controller
+                    name="radioOption"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <>
+                        {data?.data?.map(
+                          ({
+                            _id,
+                            isDisabled,
+                            name,
+                            discountDisplay,
+                            discountTAndC,
+                          }) => {
+                            return (
+                              <div
+                                key={_id}
+                                className={`row offer-container p-2 mb-2 ${
+                                  isDisabled && "disabled-radio-btn"
+                                }`}
+                              >
+                                <div className="col-1 align-self-center">
+                                  <Form.Check
+                                    {...field}
+                                    type="radio"
+                                    value={_id}
+                                    id={_id}
+                                    onChange={(e) => radioChangeHandler(e)}
+                                    checked={radioValue === _id}
+                                    disabled={isDisabled}
+                                  />
+                                </div>
+                                <div className="col-11">
+                                  <span className="fw-bold">{name}</span>
+                                  <div className="small">
+                                    {capitalizeString(discountDisplay)} -
+                                    {capitalizeString(discountTAndC)}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          );
-                        }
-                      )}
-                    </>
-                  )}
-                />
+                            );
+                          }
+                        )}
+                      </>
+                    )}
+                  />
+                ) : (
+                  <div>Ahh! you don't seem to have any offers currently.</div>
+                )}
               </div>
             </div>
             <div className="text-center">------- OR -------</div>

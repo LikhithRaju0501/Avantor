@@ -5,15 +5,17 @@ const cartModel = require("../cart/cartModel");
 const orderModel = require("../order/orderModel");
 const offerModel = require("./offerModel");
 var router = express.Router();
+const { ObjectId } = require("mongodb");
 
 const newUserOffer = {
   name: "Welcome to Ammijan",
+  type: 1,
   costReduction: {
     currency: "Rs",
     value: 100,
-    formattedValue: "200 Rs",
+    formattedValue: "100 Rs",
   },
-  discountDisplay: "flat 200 off",
+  discountDisplay: "flat 100 off",
   discountTAndC: "on Purchase of items over 500",
   minimumCost: {
     currency: "Rs",
@@ -24,6 +26,7 @@ const newUserOffer = {
 
 const thankYouOffer = {
   name: "Thank You Offer",
+  type: 1,
   costReduction: {
     currency: "Rs",
     value: 200,
@@ -45,7 +48,7 @@ router.get("/", authenticateToken, async (req, res) => {
       .select("offers")
       .lean();
 
-    const { totalPrice: cartTotal } =
+    const { totalPrice: cartTotal, offer: currentOffer } =
       (await cartModel
         .findOne({
           userId: req?.userId,
@@ -58,7 +61,9 @@ router.get("/", authenticateToken, async (req, res) => {
       });
     }
 
-    return res.status(200).json([...normalizedOffers(offers, cartTotal)]);
+    return res
+      .status(200)
+      .json([...normalizedOffers(offers, cartTotal, currentOffer)]);
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -68,14 +73,16 @@ router.get("/", authenticateToken, async (req, res) => {
   }
 });
 
-const normalizedOffers = (offers, totalPrice) => {
+const normalizedOffers = (offers, totalPrice, currentOffer) => {
   let normalizedOffers = [];
   for (const offer of offers) {
     normalizedOffers = [
       ...normalizedOffers,
       {
         ...offer,
-        isDisabled: offer?.minimumCost?.value > totalPrice?.value,
+        isDisabled:
+          offer?.minimumCost?.value > totalPrice?.value ||
+          String(offer?._id) === String(currentOffer?._id),
         savings: {
           currency: offer?.costReduction?.currency,
           value: totalPrice?.value - offer?.costReduction?.value,
@@ -161,5 +168,53 @@ const createNewOfferHandler = async (user, offer) => {
 };
 
 router.post("/", authenticateToken, offersHandler);
+router.post("/apply-code", authenticateToken, async (req, res) => {
+  try {
+    const { offerId } = req?.body;
+    if (!offerId) {
+      return res.status(404).json({
+        message: "Please select an offer",
+      });
+    }
+    const { offers } =
+      (await offerModel.findOne({ userId: req?.userId }).lean()) || [];
+
+    const offer = offers?.find((offer) => String(offer?._id) === offerId);
+
+    if (!offer) {
+      return res.status(404).json({
+        message: "Invalid offer",
+      });
+    }
+
+    const getCart = await cartModel.findOne({ userId: req?.userId }).lean();
+    await cartModel.findOneAndUpdate(
+      { _id: getCart?._id },
+      {
+        offer: {
+          ...offer,
+        },
+        subTotalPrice: {
+          currency: offer?.costReduction?.currency,
+          value: getCart?.totalPrice?.value - offer?.costReduction?.value,
+          formattedValue: `${
+            getCart?.totalPrice?.value - offer?.costReduction?.value
+          }${offer?.costReduction?.currency}`,
+        },
+      },
+      { new: true }
+    );
+
+    return res.status(201).json({
+      message: "Promo Code Applied.",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Something went wrong",
+      error,
+    });
+  }
+});
 
 module.exports = { router, offersHandler };

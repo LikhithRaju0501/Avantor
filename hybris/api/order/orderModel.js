@@ -60,6 +60,20 @@ const dataSchema = new mongoose.Schema({
           required: true,
         },
       },
+      subTotalPrice: {
+        currency: {
+          type: String,
+          required: true,
+        },
+        value: {
+          type: Number,
+          required: true,
+        },
+        formattedValue: {
+          type: String,
+          required: true,
+        },
+      },
       address: {
         _id: {
           required: false,

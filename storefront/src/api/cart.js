@@ -71,3 +71,24 @@ export const useGetOffers = () => {
     refetchOnWindowFocus: false,
   });
 };
+
+const applyOffer = (params) => {
+  return axiosInstance.post(
+    `${constants.baseSiteId}my-offers/apply-code`,
+    { ...params },
+    {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    }
+  );
+};
+
+export const useApplyOffer = (applyOfferSuccess, applyOfferError) => {
+  return useMutation(["offers"], applyOffer, {
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    onSuccess: applyOfferSuccess,
+    onError: applyOfferError,
+  });
+};
