@@ -1,15 +1,31 @@
 import React from "react";
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
+import {
+  NavDropdown,
+  Navbar,
+  Nav,
+  Form,
+  Container,
+  Button,
+} from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { isLoggedIn, logout } from "../../api/register";
 import { useGetProductSuggestions } from "../../api/products";
+import styled from "styled-components";
 import "./index.css";
+
+const NavItem = styled(Link)`
+  text-decoration: none;
+  color: black;
+  display: flex;
+  padding: 5px 0px 5px 10px;
+`;
+
+const NavLink = styled(Link)`
+  text-decoration: none;
+  color: black;
+  padding: 8px;
+`;
 
 const AvtrNavbar = () => {
   const { register, handleSubmit, reset, watch } = useForm();
@@ -59,29 +75,21 @@ const AvtrNavbar = () => {
             {loggedIn && (
               <>
                 <NavDropdown title="My Account" id="navbarScrollingDropdown">
-                  <NavDropdown.Item href={"/orders"}>
-                    My Orders
-                  </NavDropdown.Item>
-                  <NavDropdown.Item href={"/shipping-options"}>
-                    Shipping Options
-                  </NavDropdown.Item>
-                  <NavDropdown.Item href={"/invoices"}>
-                    My Invoices
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item>My Details</NavDropdown.Item>
+                  <NavItem to={"/orders"}>My Orders</NavItem>
+                  <NavItem to={"/shipping-options"}>Shipping Options</NavItem>
+                  <NavItem to={"/invoices"}>My Invoices</NavItem>
                 </NavDropdown>
-                <Nav.Link href={"/cart"}>Cart</Nav.Link>
+                <NavLink to={"/cart"}>Cart</NavLink>
               </>
             )}
-            <Nav.Link>Contact Us</Nav.Link>
+            <NavLink>Contact Us</NavLink>
 
             {loggedIn ? (
-              <Nav.Link onClick={logout}>Logout</Nav.Link>
+              <NavLink onClick={logout}>Logout</NavLink>
             ) : (
               <>
-                <Nav.Link href={"/register"}>Register</Nav.Link>
-                <Nav.Link href={"/login"}>Login</Nav.Link>
+                <NavLink to={"/register"}>Register</NavLink>
+                <NavLink to={"/login"}>Login</NavLink>
               </>
             )}
           </Nav>
