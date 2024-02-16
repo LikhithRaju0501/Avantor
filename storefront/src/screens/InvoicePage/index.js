@@ -58,40 +58,35 @@ const InvoicePage = () => {
     <CxSpinner />
   ) : (
     <div className="container">
-      <div className="d-flex">
-        <div style={{ flexBasis: "25%" }} className="p-4">
-          Date Range Facets
+      <div className="p-4">
+        <div className="d-flex justify-content-end">
+          <Button className="mb-3" onClick={downloadInvoices}>
+            Download Invoices ZIP
+          </Button>
         </div>
-        <div style={{ flexBasis: "75%" }} className="p-4">
-          <div className="d-flex justify-content-end">
-            <Button className="mb-3" onClick={downloadInvoices}>
-              Download Invoices ZIP
-            </Button>
-          </div>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th></th>
-                <th>Invoice Name</th>
-                <th>Payment Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {invoicesData?.data?.invoices?.map((invoice) => {
-                return (
-                  <InvoiceItems
-                    key={invoice?._id}
-                    viewInvoice={viewInvoice}
-                    addItemToInvoiceDownload={addItemToInvoiceDownload}
-                    {...invoice}
-                  />
-                );
-              })}
-            </tbody>
-          </Table>
-          <div className="d-flex justify-content-end">
-            <Button onClick={downloadInvoices}>Download Invoices ZIP</Button>
-          </div>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Invoice Name</th>
+              <th>Payment Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {invoicesData?.data?.invoices?.map((invoice) => {
+              return (
+                <InvoiceItems
+                  key={invoice?._id}
+                  viewInvoice={viewInvoice}
+                  addItemToInvoiceDownload={addItemToInvoiceDownload}
+                  {...invoice}
+                />
+              );
+            })}
+          </tbody>
+        </Table>
+        <div className="d-flex justify-content-end">
+          <Button onClick={downloadInvoices}>Download Invoices ZIP</Button>
         </div>
       </div>
     </div>

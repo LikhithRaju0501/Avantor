@@ -13,10 +13,10 @@ const checkoutRoute = require("./api/checkout/checkout");
 const orderRoute = require("./api/order/order");
 const invoiceRoute = require("./api/order/invoice");
 const { router: offersRoute } = require("./api/offers/offer");
+require("dotenv").config();
 
 const port = 5000;
-const mongoString =
-  "mongodb+srv://likhithgraju:kXmfm6axm2AqFkCT@cluster0.dudrojd.mongodb.net/avantor";
+const mongoString = process.env.MONGODB_URI;
 const bodyParser = require("body-parser");
 
 app.use(cors());
