@@ -4,7 +4,7 @@ import CxParagraph from "../CxParagraph";
 import CxCarousel from "../CxCarousel";
 import { useGetPage } from "../../api/pages";
 import { PageNotFound } from "../../screens";
-import { useParams } from "react-router-dom";
+import CxAccordion from "../CxAccordion";
 
 const CmsComponent = ({ children }) => {
   const location = useLocation();
@@ -27,6 +27,8 @@ const CmsComponent = ({ children }) => {
             <div key={_id}>
               {type === "ParagraphComponent" ? (
                 <CxParagraph {...rest} />
+              ) : type === "AccordionComponent" ? (
+                <CxAccordion {...rest} />
               ) : type === "CarouselComponent" ? (
                 <CxCarousel {...rest} />
               ) : type === "FlexComponent" ? (

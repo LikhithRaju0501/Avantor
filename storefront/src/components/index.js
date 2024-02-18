@@ -9,3 +9,4 @@ export { default as ChangeDeliveryAddress } from "./ChangeDeliveryAddress";
 export { default as CxParagraph } from "./CxParagraph";
 export { default as CxCarousel } from "./CxCarousel";
 export { default as CmsComponent } from "./CmsComponent";
+export { default as CxAccordion } from "./CxAccordion";

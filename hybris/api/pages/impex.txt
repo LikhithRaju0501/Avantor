@@ -1,0 +1,151 @@
+Flex Component:
+{
+    "user": {
+        "name": "Likki",
+        "safeWord": "Span"
+    },
+    "pathname": "/shipping-options",
+    "component":{
+    "type": "FlexComponent"    
+  }
+}
+
+
+Paragraph Component:
+{
+    "user": {
+        "name": "Likki",
+        "safeWord": "Span"
+    },
+    "pathname": "/privacy-policy",
+    "component": {
+        "type": "ParagraphComponent",
+        "title": "Ammijan Commercial Data Privacy Statement",
+        "description": "<p>Last Updated: February 16, 2024</p><p>Your privacy is important to you and therefore, it is important to Ammijan. This Commercial Data Privacy Statement, referred to throughout as the Privacy Statement, provides three important pieces of information:</p><ol><li>How Ammijan collects personal data from you</li><li>What personal data Ammijan collects from you through our interactions with you or through our marketing of products and services to you, whether directly or through our affiliated companies and</li><li>How we use that personal data.</li></ol><p>Ammijan, Inc. and all of its affiliated organizations are referred to in this Privacy Statement as “Ammijan” and also as “we,” “us,” or “our.” We may refer to a particular affiliate by name, but unless we do that, this Privacy Statement applies to all of Ammijan’s affiliates. The term “personal data” is used in this Privacy Statement to refer to any information that can be used, alone or in combination with other information, to identify an individual.</p><p>Ammijan offers many products and services so we can be a trusted partner to you, supporting your goals by providing discovery‐to‐delivery solutions for the global life sciences and advanced technology industries. This Privacy Statement applies to Ammijan’s interactions with you, the products and services described in this Privacy Statement, and other Avantor products and services that display this Privacy Statement.</p>"
+    }
+}
+
+Carousel Component:
+{
+    "user": {
+        "name": "Likki",
+        "safeWord": "Span"
+    },
+    "pathname": "/",
+    "component":{
+    "type": "CarouselComponent",
+    "title": "Checkout our Products:",
+    "slides": [
+      {
+        "title": "Great deal on Laptops",
+        "description": "Get a great deal on Dell, HP, Asus Laptops",
+        "imgSrc":
+          "https://m.media-amazon.com/images/I/51rEPuvNYFL._AC_UL320_.jpg",
+        "isButton": true,
+        "buttonTitle": "View More",
+        "btnUrl": "/search/laptop"
+      },
+      {
+        "title": "Great deal on mobile phones",
+        "description": "Get a great deal on One Plus, Samsung Mobiles",
+        "imgSrc":
+          "https://m.media-amazon.com/images/I/818UhQ1kpdL._AC_UY218_.jpg",
+        "isButton": true,
+        "buttonTitle": "View More",
+        "btnUrl": "/search/phone"
+      },
+      {
+        "title": "Great deal on Ear Phone Electronics",
+        "description":
+          "Nulla vitae elit libero, a pharetra augue mollis interdum.",
+        "imgSrc":
+          "https://m.media-amazon.com/images/I/61KVX-MbIUL._AC_UL320_.jpg",
+        "isButton": true,
+        "buttonTitle": "View More",
+        "btnUrl": "/search/ear"
+      }
+    ]
+  }
+}
+
+Accordion Component:
+{
+    "user": {
+        "name": "Likki",
+        "safeWord": "Span"
+    },
+    "pathname": "/frequently-asked-questions",
+    "component":{
+    "type": "AccordionComponent",
+    "title": "Frequently Asked Questions",
+    "accordionItems": [
+      {
+        "title": "1. What does Ammijan do?",
+        "description": "Ammijan is a leading global provider of mission-critical products and services to customers in biopharma, healthcare, education & government, and advanced technologies & applied materials industries. Our products and services are used in virtually every stage of the most important research, development, and production activities in the industries we serve. The work we do changes people’s lives for the better, and it is how we fulfill our mission of setting science in motion to create a better world."
+      },
+      {
+        "title": "2. Is Ammijan a staffing agency?",
+        "description": "Ammijan is not a staffing agency. However, we sometimes provide our customers with expert Avantor onsite personnel to manage day-to-day operations and optimization of their labs."
+      },
+      {
+        "title": "3. What kind of career opportunities does Ammijan offer?",
+        "description": "<p>We offer a wide variety of opportunities for you to explore while growing your career at Ammijan:</p><ul><li>Administrative Services</li><li>Business Operations</li><li>Commercial Excellence</li><li>Communications &amp; Brand</li><li>Customer Service</li><li>Engineering</li><li>EHS, Security &amp; Sustainability</li><li>Finance</li><li>General Management</li><li>Human Resources</li><li>Information Technology</li><li>Legal</li><li>Marketing &amp; Strategy</li><li>Operations</li><li>Planning &amp; Sourcing</li><li>Program Management</li><li>Quality</li><li>Regulatory Affairs</li><li>Research &amp; Development</li><li>Sales</li><li>Services</li></ul>"
+      },
+      {
+        "title": "4. How is Avantor ensuring the safety of its associates",
+        "description": "With associates working in various settings such as research labs, manufacturing and distribution centers, and offices, Avantor is vigilant in managing and ensuring the safety of its associates within the workplace. To learn more, visit our Associate Health, Safety and Well-being page on the Sustainability section of our website."
+      },
+      {
+        "title": "5. How is your team honoring Diversity, Equity, and Inclusion?",
+        "description": "We live our commitment to DE&I through educational opportunities, open discussion, safe space sharing sessions, and year-round activities from our employee resource groups – we call them Associate Centric Teams (ACTs). We have eight different ACTs focused on creating community and connection, and each team is open to ALL our associates to participate! Learn more about our DE&I initiatives."
+      },
+      {
+        "title": "5. How is your team honoring Diversity, Equity, and Inclusion?",
+        "description": "We live our commitment to DE&I through educational opportunities, open discussion, safe space sharing sessions, and year-round activities from our employee resource groups – we call them Associate Centric Teams (ACTs). We have eight different ACTs focused on creating community and connection, and each team is open to ALL our associates to participate! Learn more about our DE&I initiatives."
+      },
+      {
+        "title": "6. How do I know if you received my job application?",
+        "description": "You will receive a confirmation email stating that your application has been received. You can also log into your candidate account and review the status of your application by going into the Candidate Home tab."
+      },
+      {
+        "title": "7. I don't have a computer. Am I able to complete the needed paperwork on my cell phone?",
+        "description": "Yes, you can submit your application and other needed paperwork via cell phone."
+      },
+      {
+        "title": "8. What should I expect during the application process?",
+        "description": "There are five main phases in our hiring process: Application, Recruiter Screening (virtual or in-person – Estimated time: 20-45 minutes), Business Interviews (virtual or in-person – Estimated time: 30-60 minutes each), Offer Decision, and Onboarding (i.e., background/drug screenings dependent upon location, etc.)."
+      },
+      {
+        "title": "9. What factors are considered when Ammijan's Talent Acquisition team reviews candidates?",
+        "description": "Our team reviews each application based on the role’s required qualifications, including education, certifications, past work experience, skills, etc. Certain roles may also require the applicant to work onsite, hybrid, or remotely. Additionally, if applicable, applicants must provide work authorization documentation."
+      },
+      {
+        "title": "10. How do I know my application will be considered as part of a fair and unbiased recruiting process?",
+        "description": "We are committed to building a diverse workforce by establishing a diverse team of recruitment partners and providing them with meaningful training and accurate metrics. One of our top goals is that – every day – our team reaches a diverse candidate pool and provides a candidate experience that reflects our inclusive culture."
+      },
+      {
+        "title": "11. Will I be considered for other opportunities in the future if I am not hired for the role I applied for?",
+        "description": "Yes! Our team is happy to consider your application again. Please note that to be formally considered for an opportunity at Ammijan, you must apply for the specific role. You can stay up to date with our latest openings by signing up for job alerts here."
+      },
+      {
+        "title": "12. What is the best way to stay updated on career opportunities at Ammijan?",
+        "description": "New opportunities are posted all the time at Ammijan – and to make sure you don’t miss out on any of them, you can sign up for our job alerts, and we’ll send you notifications of the latest roles that match your interests right to your email inbox. Sign up here."
+      },
+      {
+        "title": "13. How long does the pre-employment background check take?",
+        "description": "The turnaround time for each screening varies according to the applicant's location. For example, in the U.S., applicants can estimate their screening process to be around 7-14 business days."
+      }
+    ]
+  }
+}
+
+
+Delete Component:
+{
+    "user": {
+        "name": "Likki",
+        "safeWord": "Span"
+    },
+    "pathname": "/shipping-options2",
+    "id":"65d20b055a8dcbfa8cbafcc0"
+}
