@@ -13,6 +13,7 @@ const checkoutRoute = require("./api/checkout/checkout");
 const orderRoute = require("./api/order/order");
 const invoiceRoute = require("./api/order/invoice");
 const { router: offersRoute } = require("./api/offers/offer");
+const pageRoute = require("./api/pages/pages");
 require("dotenv").config();
 
 const port = 5000;
@@ -45,6 +46,7 @@ app.use("/checkout", checkoutRoute);
 app.use("/orders", orderRoute);
 app.use("/invoice", invoiceRoute);
 app.use("/my-offers", offersRoute);
+app.use("/pages", pageRoute);
 
 // Start the server
 app.listen(port, () => {

@@ -66,7 +66,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div>
+    <div id="RegisterPage">
       <CxStepper steps={steps} activeStep={currentStep} />
       {currentStep === 1 ? (
         <div className="register-page">

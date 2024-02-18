@@ -7,7 +7,7 @@ const steps = ["Shipping Details", "Review Order"];
 
 const CheckoutPage = ({ step }) => {
   return (
-    <div className="p-4">
+    <div className="p-4" id="CheckoutPage">
       <CxStepper steps={steps} activeStep={step} />
       {Number(step) === 1 ? (
         <DeliveryAddress />

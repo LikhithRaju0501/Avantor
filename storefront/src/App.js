@@ -1,18 +1,16 @@
 import React, { Component } from "react";
 import {
   CartPage,
-  CheckoutPage,
   Homepage,
   InvoicePage,
   LoginPage,
   OrdersPage,
-  PageNotFound,
   ProductPage,
   RegisterPage,
   SearchPage,
   ShippingOptions,
 } from "./screens";
-import { AvtrNavbar } from "./components";
+import { AvtrNavbar, CmsComponent } from "./components";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { QueryClientProvider, QueryClient } from "react-query";
 import { GlobalMessageProvider } from "./components/GlobalMessageService/GlobalMessageService";
@@ -66,7 +64,7 @@ class App extends Component {
                 path="/invoices"
                 element={isLoggedIn() ? <InvoicePage /> : <LoginPage />}
               />
-              <Route path="*" element={<PageNotFound />} />
+              <Route path="*" element={<CmsComponent />} />
             </Routes>
           </GlobalMessageProvider>
         </Router>

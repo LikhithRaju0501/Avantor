@@ -65,7 +65,7 @@ const OrdersPage = () => {
   return isOrdersLoading ? (
     <CxSpinner />
   ) : (
-    <div className="p-4">
+    <div className="p-4" id="OrdersPage">
       <div className="d-flex">
         <div style={{ flexBasis: "25%" }}>
           <div

@@ -57,7 +57,7 @@ const InvoicePage = () => {
   return isInvoicesLoading || isGettingInvoiceLoading ? (
     <CxSpinner />
   ) : (
-    <div className="container">
+    <div className="container" id="InvoicePage">
       <div className="p-4">
         <div className="d-flex justify-content-end">
           <Button className="mb-3" onClick={downloadInvoices}>

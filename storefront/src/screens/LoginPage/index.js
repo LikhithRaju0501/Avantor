@@ -56,7 +56,7 @@ const LoginPage = () => {
     console.log(error);
   };
   return (
-    <div className="login-page">
+    <div className="login-page" id="LoginPage">
       {UserNotExistsError && (
         <Alert variant="warning">
           <span>

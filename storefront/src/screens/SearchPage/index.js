@@ -25,12 +25,12 @@ const SearchPage = () => {
   }
 
   return (
-    <div>
+    <div id="SearchPage">
       {isLoading ? (
         <CxSpinner />
       ) : (
         <>
-          <h2 style={{ textAlign: "center" }}>
+          <h2 className="text-center px-5">
             {paginationModel?.totalResults} results for {searchTerm}
           </h2>
           <div className="d-flex">
