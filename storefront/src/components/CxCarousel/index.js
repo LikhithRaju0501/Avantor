@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const CxCarousel = ({ title, slides }) => {
   return (
-    <div className="mb-5">
+    <div className="container mb-5">
       <h3>{title}</h3>
 
       <Carousel data-bs-theme="dark">

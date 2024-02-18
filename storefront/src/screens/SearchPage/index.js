@@ -25,7 +25,7 @@ const SearchPage = () => {
   }
 
   return (
-    <div id="SearchPage">
+    <div id="SearchPage" className="container">
       {isLoading ? (
         <CxSpinner />
       ) : (

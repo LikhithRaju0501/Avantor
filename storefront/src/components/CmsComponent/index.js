@@ -4,14 +4,23 @@ import CxParagraph from "../CxParagraph";
 import CxCarousel from "../CxCarousel";
 import { useGetPage } from "../../api/pages";
 import { PageNotFound } from "../../screens";
+import { useParams } from "react-router-dom";
 
 const CmsComponent = ({ children }) => {
   const location = useLocation();
   const { pathname } = location;
 
-  const { data } = useGetPage(pathname);
+  const firstSlashIndex = pathname.indexOf("/");
+  const secondSlashIndex = pathname.indexOf("/", firstSlashIndex + 1);
+  const result =
+    secondSlashIndex === -1
+      ? pathname
+      : pathname.substring(-1, secondSlashIndex);
+
+  const { data } = useGetPage(result);
+
   return (
-    <div className="container">
+    <>
       {data?.data?.length ? (
         data.data.map(({ _id, type, ...rest }) => {
           return (
@@ -20,6 +29,8 @@ const CmsComponent = ({ children }) => {
                 <CxParagraph {...rest} />
               ) : type === "CarouselComponent" ? (
                 <CxCarousel {...rest} />
+              ) : type === "FlexComponent" ? (
+                <>{children}</>
               ) : (
                 <></>
               )}
@@ -29,8 +40,7 @@ const CmsComponent = ({ children }) => {
       ) : !children ? (
         <PageNotFound />
       ) : null}
-      {children}
-    </div>
+    </>
   );
 };
 

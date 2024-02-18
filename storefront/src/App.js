@@ -32,37 +32,89 @@ class App extends Component {
               <Route
                 exact
                 path="/search/:searchTerm"
-                element={<SearchPage />}
+                element={
+                  <CmsComponent>
+                    <SearchPage />
+                  </CmsComponent>
+                }
               />
-              <Route exact path="/p/:productId" element={<ProductPage />} />
+              <Route
+                exact
+                path="/p/:productId"
+                element={
+                  <CmsComponent>
+                    <ProductPage />
+                  </CmsComponent>
+                }
+              />
               <Route exact path="/register" element={<RegisterPage />} />
               <Route exact path="/login" element={<LoginPage />} />
               <Route
                 exact
                 path="/cart"
-                element={isLoggedIn() ? <CartPage /> : <LoginPage />}
+                element={
+                  isLoggedIn() ? (
+                    <CmsComponent>
+                      <CartPage />
+                    </CmsComponent>
+                  ) : (
+                    <LoginPage />
+                  )
+                }
               />
               <Route
                 exact
                 path="/shipping-options"
-                element={isLoggedIn() ? <ShippingOptions /> : <LoginPage />}
+                element={
+                  isLoggedIn() ? (
+                    <CmsComponent>
+                      <ShippingOptions />{" "}
+                    </CmsComponent>
+                  ) : (
+                    <LoginPage />
+                  )
+                }
               />
               <Route
                 exact
                 path="/checkout/:checkoutStep/*"
-                element={isLoggedIn() ? <CheckoutStepsGuard /> : <LoginPage />}
+                element={
+                  isLoggedIn() ? (
+                    <CmsComponent>
+                      <CheckoutStepsGuard />
+                    </CmsComponent>
+                  ) : (
+                    <LoginPage />
+                  )
+                }
               />
 
               <Route
                 exact
                 path="/orders"
-                element={isLoggedIn() ? <OrdersPage /> : <LoginPage />}
+                element={
+                  isLoggedIn() ? (
+                    <CmsComponent>
+                      <OrdersPage />
+                    </CmsComponent>
+                  ) : (
+                    <LoginPage />
+                  )
+                }
               />
 
               <Route
                 exact
                 path="/invoices"
-                element={isLoggedIn() ? <InvoicePage /> : <LoginPage />}
+                element={
+                  isLoggedIn() ? (
+                    <CmsComponent>
+                      <InvoicePage />{" "}
+                    </CmsComponent>
+                  ) : (
+                    <LoginPage />
+                  )
+                }
               />
               <Route path="*" element={<CmsComponent />} />
             </Routes>
