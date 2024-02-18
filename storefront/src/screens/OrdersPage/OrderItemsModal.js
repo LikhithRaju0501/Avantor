@@ -2,7 +2,13 @@ import React from "react";
 import { Button, Modal, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-const OrderItemsModal = ({ entries, totalPrice, onHide, ...rest }) => {
+const OrderItemsModal = ({
+  entries,
+  totalPrice,
+  onHide,
+  subTotalPrice,
+  ...rest
+}) => {
   return (
     <Modal {...rest}>
       <Modal.Header>
@@ -41,7 +47,7 @@ const OrderItemsModal = ({ entries, totalPrice, onHide, ...rest }) => {
           </tbody>
         </Table>
         <div className="fw-bold" style={{ textAlign: "right" }}>
-          Total Price: {totalPrice?.formattedValue}
+          Total Price: {subTotalPrice?.formattedValue}
         </div>
       </Modal.Body>
       <Modal.Footer>

@@ -67,7 +67,7 @@ const ShippingOptions = () => {
       {isShippingOptionsLoading ? (
         <CxSpinner />
       ) : (
-        <div className="px-5">
+        <div className="px-5" id="ShippingOptions">
           <h4 className="mt-3">Shipping Options:</h4>
           <p className="text-break text-center">
             Store your shipping information and default settings below.When you

@@ -45,7 +45,7 @@ const CartPage = () => {
   };
 
   return (
-    <div style={{ padding: "1vh 10vw" }}>
+    <div style={{ padding: "1vh 10vw" }} id="CartPage">
       {isLoading || isDeleteLoading ? (
         <CxSpinner />
       ) : (
