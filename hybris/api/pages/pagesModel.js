@@ -13,9 +13,7 @@ const dataSchema = new mongoose.Schema({
       },
       title: {
         type: String,
-        required: function () {
-          return this.type === "ParagraphComponent";
-        },
+        required: true,
       },
       description: {
         type: String,
@@ -58,6 +56,23 @@ const dataSchema = new mongoose.Schema({
         ],
         required: function () {
           return this.type === "CarouselComponent";
+        },
+      },
+      accordionItems: {
+        type: [
+          {
+            title: {
+              type: String,
+              required: true,
+            },
+            description: {
+              type: String,
+              required: true,
+            },
+          },
+        ],
+        required: function () {
+          return this.type === "AccordionComponent";
         },
       },
     },
