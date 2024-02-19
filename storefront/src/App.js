@@ -28,7 +28,15 @@ class App extends Component {
           <AvtrNavbar />
           <GlobalMessageProvider>
             <Routes>
-              <Route exact path="/" element={<Homepage />} />
+              <Route
+                exact
+                path="/"
+                element={
+                  <CmsComponent>
+                    <Homepage />
+                  </CmsComponent>
+                }
+              />
               <Route
                 exact
                 path="/search/:searchTerm"
