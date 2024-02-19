@@ -41,7 +41,7 @@ router.post("/add-page", async (req, res) => {
                   currentComponent?.priority === component?.priority
               )
             ) {
-              return res.status(201).json({
+              return res.status(400).json({
                 message:
                   "Priority already exists, please change the priorities to adjust the order",
               });
@@ -78,12 +78,14 @@ router.post("/add-page", async (req, res) => {
           console.error(error);
           return res.status(500).json({
             message: "Something Went Wrong",
+            error,
           });
         }
       } catch (e) {
         console.error(error);
         return res.status(500).json({
           message: "Something Went Wrong",
+          error,
         });
       }
     } else {
