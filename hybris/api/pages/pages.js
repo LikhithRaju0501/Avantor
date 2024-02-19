@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const pagesModel = require("./pagesModel");
+require("dotenv").config();
 
 router.post("/", async (req, res) => {
   try {
@@ -25,7 +26,10 @@ router.post("/", async (req, res) => {
 router.post("/add-page", async (req, res) => {
   try {
     const { user, pathname, component } = req?.body;
-    if (user?.name === "Likki" && user?.safeWord === "Span") {
+    if (
+      user?.name === process.env.CMSUSERNAME &&
+      user?.safeWord === process.env.CMSUSERSAFEWORD
+    ) {
       try {
         const currentPage = await pagesModel
           .findOne({
@@ -106,7 +110,10 @@ router.post("/add-page", async (req, res) => {
 router.delete("/", async (req, res) => {
   try {
     const { user, pathname, id } = req?.body;
-    if (user?.name === "Likki" && user?.safeWord === "Span") {
+    if (
+      user?.name === process.env.CMSUSERNAME &&
+      user?.safeWord === process.env.CMSUSERSAFEWORD
+    ) {
       try {
         const currentPage = await pagesModel
           .findOne({
@@ -178,7 +185,10 @@ router.put("/", async (req, res) => {
       componentId,
       component: updatedComponent,
     } = req?.body;
-    if (user?.name === "Likki" && user?.safeWord === "Span") {
+    if (
+      user?.name === process.env.CMSUSERNAME &&
+      user?.safeWord === process.env.CMSUSERSAFEWORD
+    ) {
       try {
         const currentPage = await pagesModel.findOne({
           pathname,
@@ -219,12 +229,14 @@ router.put("/", async (req, res) => {
           console.error(error);
           return res.status(500).json({
             message: "Something Went Wrong",
+            error,
           });
         }
       } catch (e) {
         console.error(error);
         return res.status(500).json({
           message: "Something Went Wrong",
+          error,
         });
       }
     } else {
