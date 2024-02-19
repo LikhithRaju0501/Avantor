@@ -1,6 +1,5 @@
 import React from "react";
 import Banner from "../../assets/ammijan-high-resolution-logo-black.png";
-import { CmsComponent } from "../../components";
 
 const Homepage = () => {
   return (
