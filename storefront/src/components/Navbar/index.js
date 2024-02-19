@@ -12,10 +12,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { isLoggedIn, logout } from "../../api/register";
 import { useGetProductSuggestions } from "../../api/products";
 import "./index.css";
+import isLikhith from "is-likhith";
 
 const AvtrNavbar = () => {
   const { register, handleSubmit, reset, watch } = useForm();
   const loggedIn = isLoggedIn();
+  console.log(isLikhith("Likhith"));
 
   let navigate = useNavigate();
   const onSubmit = (data) => {
