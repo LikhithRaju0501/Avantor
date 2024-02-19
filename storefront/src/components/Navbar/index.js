@@ -78,9 +78,7 @@ const AvtrNavbar = () => {
                 <Nav.Link href={"/cart"}>Cart</Nav.Link>
               </>
             )}
-            <Nav.Link href={"/terms-and-conditions"}>
-              Terms And Conditions
-            </Nav.Link>
+            <Nav.Link href={"/terms-and-conditions"}>Terms</Nav.Link>
 
             {loggedIn ? (
               <Nav.Link onClick={logout}>Logout</Nav.Link>

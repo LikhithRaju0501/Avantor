@@ -11,6 +11,10 @@ const dataSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
+      priority: {
+        type: Number,
+        required: true,
+      },
       title: {
         type: String,
         required: function () {
