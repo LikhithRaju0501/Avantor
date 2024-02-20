@@ -267,15 +267,9 @@ router.put("/", async (req, res) => {
 });
 
 const pageTypeCheckerHandler = (component) => {
-  if (
-    PAGE_TYPES?.some((pageType) => {
-      return pageType === component?.type;
-    })
-  ) {
-    return true;
-  }
-
-  return false;
+  return PAGE_TYPES?.some((pageType) => {
+    return pageType === component?.type;
+  });
 };
 
 module.exports = router;
