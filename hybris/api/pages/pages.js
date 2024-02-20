@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const pagesModel = require("./pagesModel");
+const { PAGE_TYPES } = require("./constants");
 require("dotenv").config();
 
 router.post("/", async (req, res) => {
@@ -26,6 +27,12 @@ router.post("/", async (req, res) => {
 router.post("/add-page", async (req, res) => {
   try {
     const { user, pathname, component } = req?.body;
+    if (!pageTypeCheckerHandler(component)) {
+      return res.status(402).json({
+        message: "Invalid Page Type",
+      });
+    }
+
     if (
       user?.name === process.env.CMSUSERNAME &&
       user?.safeWord === process.env.CMSUSERSAFEWORD
@@ -185,6 +192,11 @@ router.put("/", async (req, res) => {
       componentId,
       component: updatedComponent,
     } = req?.body;
+    if (!pageTypeCheckerHandler(updatedComponent)) {
+      return res.status(402).json({
+        message: "Invalid Page Type",
+      });
+    }
     if (
       user?.name === process.env.CMSUSERNAME &&
       user?.safeWord === process.env.CMSUSERSAFEWORD
@@ -253,5 +265,17 @@ router.put("/", async (req, res) => {
     });
   }
 });
+
+const pageTypeCheckerHandler = (component) => {
+  if (
+    PAGE_TYPES?.some((pageType) => {
+      return pageType === component?.type;
+    })
+  ) {
+    return true;
+  }
+
+  return false;
+};
 
 module.exports = router;
