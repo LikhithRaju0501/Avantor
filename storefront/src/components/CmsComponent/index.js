@@ -5,6 +5,7 @@ import CxCarousel from "../CxCarousel";
 import { useGetPage } from "../../api/pages";
 import { PageNotFound } from "../../screens";
 import CxAccordion from "../CxAccordion";
+import CxSpinner from "../CxSpinner";
 
 const CmsComponent = ({ children }) => {
   const location = useLocation();
@@ -17,9 +18,9 @@ const CmsComponent = ({ children }) => {
       ? pathname
       : pathname.substring(-1, secondSlashIndex);
 
-  const { data } = useGetPage(result);
+  const { data, isLoading } = useGetPage(result);
 
-  return (
+  return !isLoading ? (
     <>
       {data?.data?.length ? (
         data.data.map(({ _id, type, ...rest }) => {
@@ -43,6 +44,8 @@ const CmsComponent = ({ children }) => {
         <PageNotFound />
       ) : null}
     </>
+  ) : (
+    <CxSpinner />
   );
 };
 
