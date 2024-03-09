@@ -9,7 +9,7 @@ var router = express.Router();
 const moment = require("moment-timezone");
 const nodemailer = require("nodemailer");
 const { getPaginatedData } = require("../search/resuableMethods");
-const puppeteer = require("puppeteer");
+const pdf = require("html-pdf");
 const { offersHandler } = require("../offers/offer");
 
 router.get("/", authenticateToken, async (req, res) => {
@@ -330,16 +330,16 @@ const deleteOffer = async (userId, offer) => {
 };
 
 const convertHTMLToPDF = async (html) => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-
-  await page.setContent(html);
-  const pdfBuffer = await page.pdf({ format: "A4" });
-
-  await browser.close();
-
-  const pdfBase64 = pdfBuffer.toString("base64");
-  return pdfBase64;
+  return new Promise((resolve, reject) => {
+    pdf.create(html).toBuffer((err, buffer) => {
+      if (err) {
+        reject(err);
+      } else {
+        const base64String = buffer.toString("base64");
+        resolve(base64String);
+      }
+    });
+  });
 };
 
 const generateFacets = (sort, orderedDate) => {
