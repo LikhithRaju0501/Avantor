@@ -42,7 +42,9 @@ const CmsComponent = ({ children }) => {
         })
       ) : !children ? (
         <PageNotFound />
-      ) : null}
+      ) : (
+        <PageNotFound />
+      )}
     </>
   ) : (
     <CxSpinner />
