@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {
   CartPage,
+  CmsAdminPage,
   Homepage,
   InvoicePage,
   LoginPage,
@@ -118,6 +119,20 @@ class App extends Component {
                   isLoggedIn() ? (
                     <CmsComponent>
                       <InvoicePage />{" "}
+                    </CmsComponent>
+                  ) : (
+                    <LoginPage />
+                  )
+                }
+              />
+
+              <Route
+                exact
+                path="/cms-admin"
+                element={
+                  isLoggedIn() ? (
+                    <CmsComponent>
+                      <CmsAdminPage />{" "}
                     </CmsComponent>
                   ) : (
                     <LoginPage />

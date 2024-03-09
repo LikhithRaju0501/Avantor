@@ -1,19 +1,54 @@
 var express = require("express");
 var router = express.Router();
 const pagesModel = require("./pagesModel");
+const UserModel = require("../user/UserModel");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 require("dotenv").config();
 
 router.post("/", async (req, res) => {
   try {
     const { pathname } = req?.body;
+    if (pathname === process.env.CMSUSERPAGESADMIN) {
+      const token = req.header("Authorization");
+      if (!token) {
+        return res.status(401).json([]);
+      }
 
-    const currentPage = await pagesModel.findOne({
-      pathname,
-    });
+      jwt.verify(token, "your-secret-key", async (err, decoded) => {
+        if (err) {
+          return res.status(401).json([]);
+        }
+        const user = await UserModel.findById(decoded?.userId).lean();
+        if (user?.username === process.env.CMSUSERNAME) {
+          const passwordMatch = await bcrypt.compare(
+            process.env.CMSUSERSAFEWORD,
+            user?.password
+          );
+          if (passwordMatch) {
+            const currentPage = await pagesModel.findOne({
+              pathname,
+            });
 
-    return res
-      .status(200)
-      .json(currentPage ? [...currentPage?.components] : []);
+            return res
+              .status(200)
+              .json(currentPage ? [...currentPage?.components] : []);
+          } else {
+            return res.status(200).json([]);
+          }
+        } else {
+          return res.status(200).json([]);
+        }
+      });
+    } else {
+      const currentPage = await pagesModel.findOne({
+        pathname,
+      });
+
+      return res
+        .status(200)
+        .json(currentPage ? [...currentPage?.components] : []);
+    }
   } catch (error) {
     console.log(error);
     return res.status(500).json({

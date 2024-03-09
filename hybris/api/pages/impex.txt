@@ -6,7 +6,8 @@ Flex Component:
     },
     "pathname": "/shipping-options",
     "component":{
-    "type": "FlexComponent"    
+    "type": "FlexComponent" ,
+    "priority": 0  
   }
 }
 
