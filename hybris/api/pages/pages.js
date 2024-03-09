@@ -11,7 +11,7 @@ router.post("/", async (req, res) => {
   try {
     const { pathname } = req?.body;
     if (pathname === process.env.CMSUSERPAGESADMIN) {
-      const token = req.header("Authorization");
+      const token = req?.header("Authorization");
       if (!token) {
         return res.status(401).json([]);
       }
