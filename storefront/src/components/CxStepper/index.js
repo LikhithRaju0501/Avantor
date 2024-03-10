@@ -4,9 +4,9 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 
-const CxStepper = ({ activeStep, steps }) => {
+const CxStepper = ({ activeStep, steps, ...rest }) => {
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%" }} {...rest}>
       <Stepper activeStep={Number(activeStep)} alternativeLabel>
         {steps?.map((label) => (
           <Step key={label}>
