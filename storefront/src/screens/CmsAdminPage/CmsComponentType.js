@@ -67,6 +67,8 @@ const CmsComponentType = ({
   };
   return (
     <>
+      <span className="fw-bold">Type: </span>
+      {type}
       {type === "FlexComponent" && (
         <>
           <Form
