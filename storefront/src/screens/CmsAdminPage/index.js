@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { CxSpinner, CxStepper } from "../../components";
-import { Button, Form, InputGroup } from "react-bootstrap";
-import { useForm } from "react-hook-form";
 import { useGetCMSPage, useCreateCMSPage } from "../../api/pages";
 import CmsComponentType from "./CmsComponentType";
 import { useNavigate } from "react-router-dom";
 import { useGlobalMessage } from "../../components/GlobalMessageService/GlobalMessageService";
+import CmsAdminPageURLHandler from "./CmsAdminPageURLHandler";
+import CmsAdminPageComponentTypeHandler from "./CmsAdminPageComponentTypeHandler";
+import CmsAdminCredentialsHandler from "./CmsAdminCredentialsHandler";
 
 const CmsAdminPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -27,35 +28,7 @@ const CmsAdminPage = () => {
   ];
   const { addMessage } = useGlobalMessage();
 
-  const validations = {
-    name: { required: "Name is required" },
-    safeWord: {
-      required: "Password is required",
-    },
-  };
-  const { register: registerPageURL, handleSubmit: handlePageURLSubmit } =
-    useForm();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
   let navigate = useNavigate();
-
-  const formSubmit = (data) => {
-    const CMSPayload = {
-      user: {
-        ...data,
-      },
-      pathname: CMSPageURL,
-      component: {
-        ...CMSComponentRequest,
-      },
-    };
-    createCMSPage(CMSPayload);
-  };
 
   const onFetchPageSuccess = (data) => {
     setCurrentStep(2);
@@ -85,117 +58,34 @@ const CmsAdminPage = () => {
       <CxStepper steps={steps} activeStep={currentStep} className="mb-4" />
       <div className="mx-auto col-md-6">
         {currentStep === 1 && (
-          <Form onSubmit={handlePageURLSubmit(pageURLFormSubmit)}>
-            <Form.Label htmlFor="basic-url">CMS Page URL</Form.Label>
-            <InputGroup className="mb-3">
-              <InputGroup.Text id="basic-addon1">/</InputGroup.Text>
-              <Form.Control
-                aria-label="CMS Page URL"
-                aria-describedby="basic-addon1"
-                {...registerPageURL("pageURL")}
-              />
-            </InputGroup>
-            <Button type="submit" className="w-100">
-              Next
-            </Button>
-          </Form>
+          <CmsAdminPageURLHandler pageURLFormSubmit={pageURLFormSubmit} />
         )}
 
         {currentStep === 2 && (
-          <>
-            <h3>Current Components:</h3>
-            {CMSPageData?.length ? (
-              CMSPageData?.map(({ _id, type, ...rest }) => (
-                <div key={_id}>
-                  <Button variant="light" className="w-100 mb-2">
-                    {type}
-                  </Button>
-                </div>
-              ))
-            ) : (
-              <span className="text-center">Empty Page</span>
-            )}
-            <hr />
-            <h4>Select Component Type: </h4>
-            <Form.Select
-              value={CMSComponentType}
-              onChange={(event) => setCMSComponentType(event?.target?.value)}
-              className="mt-3 mb-3 cursor-pointer"
-            >
-              {componentTypes?.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </Form.Select>
-            <Button
-              variant="secondary"
-              className="w-100 mb-2"
-              onClick={() => setCurrentStep(3)}
-            >
-              Add
-            </Button>
-
-            <Button
-              variant="outline-dark"
-              className="w-100 mb-2"
-              onClick={() => setCurrentStep(1)}
-            >
-              Back
-            </Button>
-          </>
+          <CmsAdminPageComponentTypeHandler
+            CMSPageData={CMSPageData}
+            CMSComponentType={CMSComponentType}
+            setCMSComponentType={setCMSComponentType}
+            componentTypes={componentTypes}
+            setCurrentStep={setCurrentStep}
+          />
         )}
 
         {currentStep === 3 && (
-          <>
-            <div>
-              <span className="fw-bold">Type: </span>
-              {CMSComponentType}
-              <CmsComponentType
-                type={CMSComponentType}
-                currentPageData={CMSPageData}
-                setCurrentStep={setCurrentStep}
-                setCMSComponentRequest={setCMSComponentRequest}
-              />
-            </div>
-          </>
+          <CmsComponentType
+            type={CMSComponentType}
+            currentPageData={CMSPageData}
+            setCurrentStep={setCurrentStep}
+            setCMSComponentRequest={setCMSComponentRequest}
+          />
         )}
 
         {currentStep === 4 && (
-          <Form onSubmit={handleSubmit(formSubmit)}>
-            <Form.Group className="mb-3">
-              <Form.Label>Username</Form.Label>
-              <Form.Control
-                placeholder="Enter name"
-                autoComplete="off"
-                {...register("name", validations.name)}
-              />
-              <div className="text-danger small">{errors?.name?.message}</div>
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                autoComplete="off"
-                {...register("safeWord", validations.safeWord)}
-              />
-              <div className="text-danger small">
-                {errors?.safeWord?.message}
-              </div>
-            </Form.Group>
-            <Button variant="success" type="submit" className="w-100 mb-2">
-              Create
-            </Button>
-            <Button
-              variant="outline-dark"
-              className="w-100 mb-2"
-              onClick={() => setCurrentStep(3)}
-            >
-              Back
-            </Button>
-          </Form>
+          <CmsAdminCredentialsHandler
+            createCMSPage={createCMSPage}
+            CMSPageURL={CMSPageURL}
+            CMSComponentRequest={CMSComponentRequest}
+          />
         )}
       </div>
     </div>
