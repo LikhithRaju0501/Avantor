@@ -6,6 +6,7 @@ import {
   InvoicePage,
   LoginPage,
   OrdersPage,
+  PageNotFound,
   ProductPage,
   RegisterPage,
   SearchPage,
@@ -18,6 +19,7 @@ import { GlobalMessageProvider } from "./components/GlobalMessageService/GlobalM
 import { isLoggedIn } from "./api/register";
 import CheckoutStepsGuard from "./screens/CheckoutPage/CheckoutStepsGuard";
 import "./App.css";
+import ResetPassword from "./screens/ResetPasswordPage";
 
 const queryClient = new QueryClient();
 
@@ -139,6 +141,21 @@ class App extends Component {
                   )
                 }
               />
+
+              <Route
+                exact
+                path="/reset-password"
+                element={
+                  !isLoggedIn() ? (
+                    <CmsComponent>
+                      <ResetPassword />
+                    </CmsComponent>
+                  ) : (
+                    <PageNotFound />
+                  )
+                }
+              />
+
               <Route path="*" element={<CmsComponent />} />
             </Routes>
           </GlobalMessageProvider>

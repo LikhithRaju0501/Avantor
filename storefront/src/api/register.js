@@ -24,6 +24,28 @@ export const useLoginUser = (onSuccess, onError) => {
   });
 };
 
+const resetPassword = (data) => {
+  return axios.post(`${constants.baseSiteId}reset-password`, data);
+};
+
+export const useResetPassword = (onSuccess, onError) => {
+  return useMutation(resetPassword, {
+    onSuccess,
+    onError,
+  });
+};
+
+const resetPasswordEmail = (data) => {
+  return axios.post(`${constants.baseSiteId}reset-password/email`, data);
+};
+
+export const useResetPasswordEmail = (onSuccess, onError) => {
+  return useMutation(resetPasswordEmail, {
+    onSuccess,
+    onError,
+  });
+};
+
 export const isLoggedIn = () => {
   return Boolean(localStorage.getItem("token"));
 };
