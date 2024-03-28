@@ -81,7 +81,7 @@ router.post("/email", async (req, res) => {
           console.error(`Error sending email to ${email}:`, error);
           return res.status(500).json({
             message:
-              "We coulldn't send the reset password mail, Please try again later.",
+              "We couldn't send the reset password mail, Please try again later.",
           });
         } else {
           console.log(`Email sent successfully to ${email}:`, info.response);
