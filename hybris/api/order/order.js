@@ -11,6 +11,7 @@ const nodemailer = require("nodemailer");
 const { getPaginatedData } = require("../search/resuableMethods");
 const pdf = require("html-pdf");
 const { offersHandler } = require("../offers/offer");
+require("dotenv").config();
 
 router.get("/", authenticateToken, async (req, res) => {
   try {
@@ -521,8 +522,8 @@ const sendMails = (
     port: 465,
     secure: true,
     auth: {
-      user: "lgrajutwitter@gmail.com",
-      pass: "hcnj xnre xfqy kmtg",
+      user: process.env.ADMINMAILID,
+      pass: process.env.ADMINMAILPASSWORD,
     },
   });
 

@@ -3,8 +3,10 @@ import { Alert, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useLoginUser } from "../../api/register";
+import { useLoginUser, useResetPasswordEmail } from "../../api/register";
 import "./index.css";
+import { useGlobalMessage } from "../../components/GlobalMessageService/GlobalMessageService";
+import CxSpinner from "../../components/CxSpinner";
 
 const LoginPage = () => {
   const [UserNotExistsError, setUserNotExistsError] = useState(false);
@@ -13,8 +15,10 @@ const LoginPage = () => {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm();
   let navigate = useNavigate();
+  const { addMessage } = useGlobalMessage();
 
   const onSuccess = (data) => {
     const { token } = data?.data;
@@ -35,7 +39,18 @@ const LoginPage = () => {
     }
   };
 
+  const onResetPasswordMailSuccess = (data) => {
+    addMessage("Mail has been sent to your registered mail ID", "success");
+  };
+  const onResetPasswordMailError = (error) => {
+    if (error?.response?.data?.message) {
+      addMessage(error.response.data.message, "error");
+    }
+  };
+
   const { mutate, isLoading: postLoading } = useLoginUser(onSuccess, onError);
+  const { mutate: resetPasswordMail, isLoading: isResetPasswordMailLoading } =
+    useResetPasswordEmail(onResetPasswordMailSuccess, onResetPasswordMailError);
 
   const validations = {
     email: { required: "Email is required" },
@@ -55,7 +70,17 @@ const LoginPage = () => {
   const formError = (error) => {
     console.log(error);
   };
-  return (
+
+  const sendResetPasswordMail = () => {
+    const email = watch("email");
+    if (!email) {
+      addMessage("Please Enter EmailID", "error");
+      return;
+    }
+    resetPasswordMail({ email, baseSite: window.location.origin });
+  };
+
+  return !isResetPasswordMailLoading && !postLoading ? (
     <div className="login-page" id="LoginPage">
       {UserNotExistsError && (
         <Alert variant="warning">
@@ -79,23 +104,34 @@ const LoginPage = () => {
             placeholder="Enter email"
             {...register("email", validations.email)}
           />
-          <div style={{ color: "red" }}>{errors?.email?.message}</div>
+          {errors?.email?.message && (
+            <div className="text-danger small">{errors.email.message}</div>
+          )}
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="formBasicPassword">
+        <Form.Group controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
             placeholder="Password"
             {...register("password", validations.password)}
           />
-          <div style={{ color: "red" }}>{errors?.password?.message}</div>
+          {errors?.password?.message && (
+            <div className="text-danger small">{errors.password.message}</div>
+          )}
         </Form.Group>
+        <div className="my-3">
+          <a onClick={sendResetPasswordMail} className="small cursor-pointer">
+            Forgot Password
+          </a>
+        </div>
         <Button variant="primary" type="submit">
           Submit
         </Button>
       </Form>
     </div>
+  ) : (
+    <CxSpinner />
   );
 };
 

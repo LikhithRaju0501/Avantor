@@ -14,6 +14,7 @@ const orderRoute = require("./api/order/order");
 const invoiceRoute = require("./api/order/invoice");
 const { router: offersRoute } = require("./api/offers/offer");
 const pageRoute = require("./api/pages/pages");
+const resetPasswordRoute = require("./api/user/reset-password");
 require("dotenv").config();
 
 const port = 5000;
@@ -47,6 +48,7 @@ app.use("/orders", orderRoute);
 app.use("/invoice", invoiceRoute);
 app.use("/my-offers", offersRoute);
 app.use("/pages", pageRoute);
+app.use("/reset-password", resetPasswordRoute);
 
 // Start the server
 app.listen(port, () => {
