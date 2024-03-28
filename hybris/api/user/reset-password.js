@@ -42,7 +42,6 @@ router.post("/", async (req, res) => {
     } else {
       return res.status(404).json({ message: "No User with Email ID exists" });
     }
-    console.log(user, "hello2");
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Error during login" });
