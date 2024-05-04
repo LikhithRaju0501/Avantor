@@ -52,7 +52,7 @@ router.get("/", authenticateToken, async (req, res) => {
         userId: user?._id,
         userName: user?.username,
         orders: [],
-        facets: [...generateFacets(sort, orderedDate)],
+        facets: [],
         breadcrumbs: [...generateBreadcrumbs(sort, orderedDate)],
         pagination: {
           currentPage: 0,
