@@ -113,7 +113,7 @@ const OrdersPage = () => {
                   }
                 )}
               </div>
-              <hr />
+              {ordersData?.data?.facets?.length ? <hr /> : null}
             </div>
             {ordersData?.data?.facets?.map(({ type, values }) => {
               return (
