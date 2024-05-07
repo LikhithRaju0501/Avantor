@@ -47,6 +47,7 @@ router.post("/", async (req, res) => {
             <html>
             <h1>Yo ${username}, Your password has been reset successfully, please don't lose it again lol :)</h1>
             </html>
+            
             `,
           };
 
