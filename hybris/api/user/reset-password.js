@@ -20,7 +20,7 @@ router.post("/", async (req, res) => {
               "The New Password has to be different from Existing Password",
           });
         } else {
-          const { _id } = user;
+          const { _id, email, username } = user;
           const hashedPassword = await bcrypt.hash(newPassword, 10);
           result = await UserModel.updateOne(
             { _id },
@@ -30,6 +30,44 @@ router.post("/", async (req, res) => {
               },
             }
           );
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
+            auth: {
+              user: process.env.ADMINMAILID,
+              pass: process.env.ADMINMAILPASSWORD,
+            },
+          });
+          const mailOptions = {
+            from: "Ammijan",
+            subject: "Reset Password Success - Ammijan",
+            html: `
+            <html>
+            <h1>Yo ${username}, Your password has been reset successfully, please don't lose it again lol :)</h1>
+            </html>
+            `,
+          };
+
+          mailOptions.to = email;
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.error(`Error sending email to ${email}:`, error);
+              return res.status(500).json({
+                message:
+                  "We couldn't send the reset password mail, Please try again later.",
+              });
+            } else {
+              console.log(
+                `Email sent successfully to ${email}:`,
+                info.response
+              );
+              return res.status(201).json({
+                message: "You will soon receive a mail to reset your password",
+              });
+            }
+          });
           return res.status(201).json({
             message: "Password Updated Successfully",
           });
