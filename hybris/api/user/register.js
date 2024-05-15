@@ -3,12 +3,12 @@ const bcrypt = require("bcryptjs");
 const UserModel = require("./UserModel");
 const shippingOptionsModel = require("../shippingOptions/shippingOptionsModel");
 const { offersHandler } = require("../offers/offer");
+const { AvatarGenerator } = require("random-avatar-generator");
 
 var router = express.Router();
 
 router.post("/", async (req, res) => {
-  const { username, email, password, address } = req?.body;
-
+  const { username, email, password, address, profilePic } = req?.body;
   const isUser = await UserModel.findOne({ email });
   if (isUser)
     return res
@@ -22,6 +22,10 @@ router.post("/", async (req, res) => {
         username,
         email,
         password: hashedPassword,
+        profilePic: {
+          isProfilePic: profilePic ? true : false,
+          userProfilePic: profilePic || getRandomAvator(),
+        },
       });
 
       const userResult = await user.save();
@@ -50,5 +54,10 @@ router.post("/", async (req, res) => {
     }
   }
 });
+
+getRandomAvator = () => {
+  const generator = new AvatarGenerator();
+  return generator.generateRandomAvatar();
+};
 
 module.exports = router;

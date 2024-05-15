@@ -13,6 +13,16 @@ const dataSchema = new mongoose.Schema({
     required: true,
     type: String,
   },
+  profilePic: {
+    isProfilePic: {
+      required: true,
+      type: Boolean,
+    },
+    userProfilePic: {
+      required: true,
+      type: String,
+    },
+  },
 });
 
 module.exports = mongoose.model("user", dataSchema);

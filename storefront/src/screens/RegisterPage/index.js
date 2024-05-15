@@ -2,7 +2,16 @@ import React, { useState } from "react";
 import "./index.css";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
+import {
+  Button,
+  CloseButton,
+  Col,
+  Form,
+  FormControl,
+  Image,
+  InputGroup,
+  Row,
+} from "react-bootstrap";
 import { useRegisterUser } from "../../api/register";
 import { CxStepper } from "../../components";
 import { useGlobalMessage } from "../../components/GlobalMessageService/GlobalMessageService";
@@ -11,6 +20,7 @@ const steps = ["Tell us about you", "Shipping Account"];
 const RegisterPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [emailAddressData, setEmailAddressData] = useState();
+  const [profilePic, setProfilePic] = useState(null);
 
   const {
     register: registerEmail,
@@ -62,8 +72,35 @@ const RegisterPage = () => {
     setCurrentStep(2);
   };
   const addressFormSubmit = (data) => {
-    createUser({ ...emailAddressData, address: { ...data } });
+    // console.log({
+    //   ...emailAddressData,
+    //   address: { ...data },
+    //   profilePic: profilePic?.imageBase64 || "",
+    // });
+    createUser({
+      ...emailAddressData,
+      address: { ...data },
+      profilePic: profilePic?.imageBase64 || "",
+    });
   };
+  const handleImageUpload = (event) => {
+    const file = event?.target?.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setProfilePic({
+          imageUrl: URL.createObjectURL(file),
+          imageBase64: reader.result,
+          name: file?.name,
+        });
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
+
+  console.log(profilePic);
 
   return (
     <div id="RegisterPage">
@@ -104,6 +141,37 @@ const RegisterPage = () => {
                 {errorsEmail?.password?.message}
               </div>
             </Form.Group>
+
+            <Form.Group controlId="formFile" className="mb-3">
+              <Form.Label>Upload Picture</Form.Label>
+              <Form.Control
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+              />
+            </Form.Group>
+            {profilePic?.imageUrl && (
+              <Row className="mb-3">
+                <Col xs={6} md={4} className="w-100 text-center mb-2">
+                  <Image
+                    src={profilePic?.imageUrl}
+                    roundedCircle
+                    className="w-50"
+                    style={{ height: "300px" }}
+                  />
+                </Col>
+                <Col
+                  xs={6}
+                  md={4}
+                  className="w-100 text-center cursor-pointer small fw-bold"
+                  onClick={() => setProfilePic(null)}
+                >
+                  <CloseButton className="w-100 text-right" />
+                  Remove
+                </Col>
+              </Row>
+            )}
+
             <div className="d-flex justify-content-between">
               <Button
                 variant="outline-primary"
