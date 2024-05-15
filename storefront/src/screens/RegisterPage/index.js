@@ -72,11 +72,6 @@ const RegisterPage = () => {
     setCurrentStep(2);
   };
   const addressFormSubmit = (data) => {
-    // console.log({
-    //   ...emailAddressData,
-    //   address: { ...data },
-    //   profilePic: profilePic?.imageBase64 || "",
-    // });
     createUser({
       ...emailAddressData,
       address: { ...data },
@@ -99,8 +94,6 @@ const RegisterPage = () => {
       reader.readAsDataURL(file);
     }
   };
-
-  console.log(profilePic);
 
   return (
     <div id="RegisterPage">
