@@ -5,6 +5,7 @@ import {
   Homepage,
   InvoicePage,
   LoginPage,
+  MyProfilePage,
   OrdersPage,
   PageNotFound,
   ProductPage,
@@ -149,6 +150,20 @@ class App extends Component {
                   !isLoggedIn() ? (
                     <CmsComponent>
                       <ResetPassword />
+                    </CmsComponent>
+                  ) : (
+                    <PageNotFound />
+                  )
+                }
+              />
+
+              <Route
+                exact
+                path="/my-profile"
+                element={
+                  isLoggedIn() ? (
+                    <CmsComponent>
+                      <MyProfilePage />
                     </CmsComponent>
                   ) : (
                     <PageNotFound />

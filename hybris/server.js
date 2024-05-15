@@ -15,6 +15,7 @@ const invoiceRoute = require("./api/order/invoice");
 const { router: offersRoute } = require("./api/offers/offer");
 const pageRoute = require("./api/pages/pages");
 const resetPasswordRoute = require("./api/user/reset-password");
+const userRoute = require("./api/user/user");
 require("dotenv").config();
 
 const port = 5000;
@@ -22,8 +23,8 @@ const mongoString = process.env.MONGODB_URI;
 const bodyParser = require("body-parser");
 
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false, limit: "25mb" }));
+app.use(bodyParser.json({ limit: "25mb" }));
 
 mongoose.connect(mongoString);
 const database = mongoose.connection;
@@ -49,6 +50,7 @@ app.use("/invoice", invoiceRoute);
 app.use("/my-offers", offersRoute);
 app.use("/pages", pageRoute);
 app.use("/reset-password", resetPasswordRoute);
+app.use("/user", userRoute);
 
 // Start the server
 app.listen(port, () => {

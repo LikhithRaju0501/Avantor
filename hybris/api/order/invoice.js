@@ -1,6 +1,5 @@
 var express = require("express");
 const authenticateToken = require("../middleware/middleware");
-const orderModel = require("./orderModel");
 const invoiceModel = require("./invoiceModel");
 const UserModel = require("../user/UserModel");
 var router = express.Router();

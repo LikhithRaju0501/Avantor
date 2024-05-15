@@ -73,7 +73,9 @@ const AvtrNavbar = () => {
                     My Invoices
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item>My Details</NavDropdown.Item>
+                  <NavDropdown.Item href={"/my-profile"}>
+                    My Details
+                  </NavDropdown.Item>
                 </NavDropdown>
                 <Nav.Link href={"/cart"}>Cart</Nav.Link>
               </>
