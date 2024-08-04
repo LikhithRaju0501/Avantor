@@ -43,27 +43,32 @@ const thankYouOffer = {
 
 router.get("/", authenticateToken, async (req, res) => {
   try {
-    const { offers } = await offerModel
+    const userOffers = await offerModel
       .findOne({ userId: req?.userId })
       .select("offers")
       .lean();
 
-    const { totalPrice: cartTotal, offer: currentOffer } =
-      (await cartModel
-        .findOne({
-          userId: req?.userId,
-        })
-        .lean()) || {};
+    if (userOffers?.offers) {
+      const { offers } = userOffers;
+      const { totalPrice: cartTotal, offer: currentOffer } =
+        (await cartModel
+          .findOne({
+            userId: req?.userId,
+          })
+          .lean()) || {};
 
-    if (!cartTotal) {
-      return res.status(500).json({
-        message: "Empty Cart",
-      });
+      if (!cartTotal) {
+        return res.status(500).json({
+          message: "Empty Cart",
+        });
+      }
+
+      return res
+        .status(200)
+        .json([...normalizedOffers(offers, cartTotal, currentOffer)]);
+    } else {
+      return res.status(200).json([]);
     }
-
-    return res
-      .status(200)
-      .json([...normalizedOffers(offers, cartTotal, currentOffer)]);
   } catch (error) {
     console.log(error);
     return res.status(500).json({

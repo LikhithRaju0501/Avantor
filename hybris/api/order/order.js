@@ -11,7 +11,6 @@ const nodemailer = require("nodemailer");
 const { getPaginatedData } = require("../search/resuableMethods");
 const pdf = require("html-pdf");
 const { offersHandler } = require("../offers/offer");
-require("dotenv").config();
 
 router.get("/", authenticateToken, async (req, res) => {
   try {
@@ -52,7 +51,7 @@ router.get("/", authenticateToken, async (req, res) => {
         userId: user?._id,
         userName: user?.username,
         orders: [],
-        facets: [],
+        facets: [...generateFacets(sort, orderedDate)],
         breadcrumbs: [...generateBreadcrumbs(sort, orderedDate)],
         pagination: {
           currentPage: 0,
@@ -109,14 +108,15 @@ router.post("/", authenticateToken, async (req, res) => {
           { new: true }
         );
         const orderId = result?.orders[result?.orders?.length - 1]?._id;
-        await createInvoice(
+        createInvoice(
           orderId,
           entries,
           totalPrice,
           subTotalPrice,
           address,
           req?.userId,
-          user?.username
+          user?.username,
+          res
         );
         await deleteOffer(req?.userId, offer);
         const deleteCart = await cartModel.deleteOne({ _id: userCart?._id });
@@ -141,14 +141,15 @@ router.post("/", authenticateToken, async (req, res) => {
 
         result = await currentOrder.save();
         const orderId = result?._id;
-        await createInvoice(
+        createInvoice(
           orderId,
           entries,
           totalPrice,
           subTotalPrice,
           address,
           req?.userId,
-          user?.username
+          user?.username,
+          res
         );
         await deleteOffer(req?.userId, offer);
         const deleteCart = await cartModel.deleteOne({ _id: userCart?._id });
@@ -190,7 +191,8 @@ const createInvoice = async (
   subTotalPrice,
   address,
   userId,
-  userName
+  userName,
+  res
 ) => {
   try {
     const userInvoices = await invoiceModel.findOne({
@@ -311,9 +313,9 @@ const createInvoice = async (
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      error,
-    });
+    // return res.status(500).json({
+    //   error,
+    // });
   }
 };
 
@@ -522,8 +524,8 @@ const sendMails = (
     port: 465,
     secure: true,
     auth: {
-      user: process.env.ADMINMAILID,
-      pass: process.env.ADMINMAILPASSWORD,
+      user: "lgrajutwitter@gmail.com",
+      pass: "hcnj xnre xfqy kmtg",
     },
   });
 
