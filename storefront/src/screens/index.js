@@ -10,3 +10,4 @@ export { default as OrdersPage } from "./OrdersPage";
 export { default as InvoicePage } from "./InvoicePage";
 export { default as PageNotFound } from "./PageNotFound";
 export { default as CmsAdminPage } from "./CmsAdminPage";
+export { default as MyProfilePage } from "./MyProfilePage";
